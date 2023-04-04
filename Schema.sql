@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS languages (
 
 DROP TABLE IF EXISTS  tenantes;
 CREATE TABLE tenantes (
-	id INT(12) PRIMARY KEY,
+	id INT PRIMARY KEY,
 	name  VARCHAR(20) NOT NULL,
 	email VARCHAR(50) UNIQUE,
 	phone INT,
@@ -33,7 +33,7 @@ CREATE TABLE tenantes (
 
 DROP TABLE IF EXISTS hosts;
 CREATE TABLE `hosts`(
-    id INT(12),
+    id INT,
     host_name VARCHAR(150),
     email VARCHAR(50) UNIQUE,
 	language_id INT(4),
@@ -43,22 +43,22 @@ CREATE TABLE `hosts`(
 
 DROP TABLE IF EXISTS airbnbs;
 CREATE TABLE airbnbs(
-    house_id INT(20),
-	host_id INT(12),
+    house_id INT,
+	host_id INT,
     title VARCHAR(100) NOT NULL,
     country CHAR(60),
     city CHAR(60),
     neighbor CHAR(60),
     street CHAR(60),
-    num_of_rooms INT(3),
-    num_of_beds INT(3),
+    num_of_rooms INT,
+    num_of_beds INT,
     PRIMARY KEY (house_id),
     FOREIGN KEY (host_id) REFERENCES hosts(id)
 );
 
 DROP TABLE IF EXISTS airbnb_unavailable;
 CREATE TABLE airbnb_unavailable(
-	house_id int(20),
+	house_id INT,
 	start_date DATE,
     end_date DATE,
   FOREIGN KEY (house_id) REFERENCES airbnbs(house_id)
@@ -66,7 +66,7 @@ CREATE TABLE airbnb_unavailable(
 
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders(
-	order_num INT(40),
+	order_num INT,
     check_in_date date,
     check_out_date date,
     price_per_day float,
@@ -79,9 +79,9 @@ CREATE TABLE orders(
 -- complex relationship table book
 DROP TABLE IF EXISTS book;
 CREATE TABLE book(
-	tenante int(12),
-    airbnb int(20),
-    order_num int(40),
+	tenante INT,
+    airbnb INT,
+    order_num INT,
     FOREIGN KEY (tenante) REFERENCES tenantes(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
     FOREIGN KEY (airbnb) REFERENCES airbnbs(house_id),
     FOREIGN KEY (order_num) REFERENCES orders(order_num)

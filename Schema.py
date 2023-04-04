@@ -1,5 +1,5 @@
 CREATE DATABASE IF NOT EXISTS Airbnb;
-
+SET FOREIGN_KEY_CHECKS=0;
 use Airbnb;
 
 -- the values in table languages and gender_pronouse are not changable
@@ -44,27 +44,31 @@ CREATE TABLE `hosts`(
 DROP TABLE IF EXISTS airbnbs;
 CREATE TABLE airbnbs(
     house_id INT(20),
-    `host` INT(12),
+	host_id INT(12),
     title VARCHAR(100) NOT NULL,
     country CHAR(60),
     city CHAR(60),
     neighbor CHAR(60),
     street CHAR(60),
-    host_id INT(12),
+    num_of_rooms INT(3),
+    num_of_beds INT(3),
     PRIMARY KEY (house_id),
     FOREIGN KEY (host_id) REFERENCES hosts(id)
 );
 
+DROP TABLE IF EXISTS airbnb_unavailable;
 CREATE TABLE airbnb_unavailable(
 	house_id int(20),
-  unavailable DATE
+	start_date DATE,
+    end_date DATE,
+  FOREIGN KEY (house_id) REFERENCES airbnbs(house_id)
 );
 
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders(
 	order_num INT(40),
-    check_in_date datetime,
-    check_out_date datetime,
+    check_in_date date,
+    check_out_date date,
     price_per_day float,
     cleaning_fee  float,
     states ENUM("wait to comfired", "cencaled", "processing", "completed"),

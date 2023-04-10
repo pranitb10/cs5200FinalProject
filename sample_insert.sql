@@ -50,7 +50,7 @@ VALUES
 	(1006, '2023-12-18', '2023-12-24'),
 	(1010, '2023-08-01', '2023-08-06');
 
-INSERT INTO orders (order_num, tenante, house_id, check_in_date, check_out_date, price_per_day, cleaning_fee, states) VALUES
+INSERT INTO orders (order_num, tenant, house_id, check_in_date, check_out_date, price_per_day, cleaning_fee, states) VALUES
 ('ORD001', 1001, 1003, '2023-06-01', '2023-06-07', 150.00, 30.00, 'wait to comfired'),
 ('ORD002', 1001, 1007, '2023-08-15', '2023-08-20', 100.00, 20.00, 'processing'),
 ('ORD003', 1003, 1009, '2023-05-12', '2023-05-18', 120.00, 25.00, 'completed'),

@@ -1,8 +1,14 @@
-CREATE DATABASE IF NOT EXISTS Airbnb;
+CREATE DATABASE IF NOT EXISTS airbnb;
 SET FOREIGN_KEY_CHECKS=0;
-use Airbnb;
+use airbnb;
 
 -- the values in table languages and gender_pronouse are not changable
+
+-- CREATE TABLE IF NOT EXISTS gender_pronous(
+--   id INT NOT NULL,
+--   pronous VARCHAR(50) NOT NULL,
+--   PRIMARY KEY (id)
+-- );
 
 CREATE TABLE IF NOT EXISTS languages (
   `name` VARCHAR(50) NOT NULL,
@@ -40,7 +46,6 @@ CREATE TABLE `hosts`(
 );
 
 
-DROP TABLE IF EXISTS world_cities;
 CREATE TABLE IF NOT EXISTS world_cities(
     city_id INT PRIMARY KEY,
     city VARCHAR(225) NOT NULL,

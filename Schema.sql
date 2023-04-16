@@ -93,6 +93,7 @@ CREATE TABLE orders(
     price_per_day DECIMAL(10,2),
     cleaning_fee  DECIMAL(10,2),
     states ENUM("wait to comfired", "cencaled", "processing", "completed"),
+    rate int CHECK (rate >= 1 AND rate <= 5) DEFAULT NULL,
     primary key (order_num),
     FOREIGN KEY (tenant) REFERENCES tenants(id),
     FOREIGN KEY (house_id) REFERENCES airbnbs(house_id) 

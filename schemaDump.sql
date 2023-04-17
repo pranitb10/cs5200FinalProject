@@ -52,7 +52,7 @@ DROP TABLE IF EXISTS `airbnbs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `airbnbs` (
   `house_id` int NOT NULL,
-  `host_id` int DEFAULT NULL,
+  `host` varchar(50) DEFAULT NULL,
   `title` varchar(100) NOT NULL,
   `city_id` int DEFAULT NULL,
   `address` varchar(100) DEFAULT NULL,
@@ -65,9 +65,9 @@ CREATE TABLE `airbnbs` (
   `current_price` decimal(10,2) DEFAULT NULL,
   `current_cleaning_fee` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`house_id`),
-  KEY `host_id` (`host_id`),
+  KEY `host` (`host`),
   KEY `city_id` (`city_id`),
-  CONSTRAINT `airbnbs_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`),
+  CONSTRAINT `airbnbs_ibfk_1` FOREIGN KEY (`host`) REFERENCES `hosts` (`email`),
   CONSTRAINT `airbnbs_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `world_cities` (`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -78,7 +78,7 @@ CREATE TABLE `airbnbs` (
 
 LOCK TABLES `airbnbs` WRITE;
 /*!40000 ALTER TABLE `airbnbs` DISABLE KEYS */;
-INSERT INTO `airbnbs` VALUES (1001,1001,'Cozy Apartment in the Heart of the City',1276974738,'123 Main St.',2,1,1,2.20,10,'This charming apartment is located in the heart of the city and is perfect for a romantic getaway or a small family vacation.',80.00,10.00),(1002,1002,'Spacious Loft with Stunning City Views',1076094869,'456 Elm St.',1,2,0,1.60,5,'Experience urban living at its finest in this spacious loft with breathtaking city views.',120.00,15.00),(1003,1003,'Luxury Condo with Pool and Gym Access',1752708772,'789 Oak St.',3,3,2,3.00,15,'Treat yourself to the ultimate luxury experience in this beautiful condo with access to a pool and gym.',250.00,20.00),(1004,1004,'Coastal Cottage with Ocean Views',1218680506,'321 Beach Rd.',2,2,1,4.70,8,'Escape to the coast and enjoy breathtaking ocean views from this charming cottage.',150.00,15.00),(1005,1005,'Historic Home with Modern Amenities',1356213628,'987 Main St.',4,3,2,4.30,12,'Experience the best of both worlds in this beautifully restored historic home with all the modern amenities you need for a comfortable stay.',200.00,20.00),(1006,1006,'Charming Bungalow in a Quiet Neighborhood',1250008059,'567 Maple St.',2,1,1,5.00,6,'This charming bungalow is the perfect place to relax and unwind in a quiet neighborhood.',100.00,10.00),(1007,1007,'Stylish Studio Apartment in Downtown',1380805860,'246 Market St.',1,1,0,3.50,7,'Experience city living in style in this modern and chic studio apartment located in the heart of downtown.',90.00,10.00),(1008,1008,'Spacious Townhouse with Private Patio',1840010109,'789 Oak St.',3,3,1,3.20,10,'This spacious townhouse with a private patio is the perfect home away from home for your next family vacation.',180.00,20.00),(1009,1009,'Modern Apartment with Stunning Views',1036216956,'357 Hilltop Rd.',1,2,1,4.70,4,'Enjoy breathtaking views from this modern and stylish apartment located on a hilltop.',120.00,15.00),(1010,1010,'Beautifully Furnished Apartment in the City',1840019682,'123 Main St.',2,2,1,3.80,9,'This beautifully furnished apartment is located in the heart of the city and is perfect for a comfortable and convenient stay.',80.00,15.00);
+INSERT INTO `airbnbs` VALUES (1001,'john.smith@gmail.com','Cozy Apartment in the Heart of the City',1276974738,'123 Main St.',2,1,1,2.20,10,'This charming apartment is located in the heart of the city and is perfect for a romantic getaway or a small family vacation.',80.00,10.00),(1002,'mary.johnson@yahoo.com','Spacious Loft with Stunning City Views',1076094869,'456 Elm St.',1,2,0,1.60,5,'Experience urban living at its finest in this spacious loft with breathtaking city views.',120.00,15.00),(1003,'david.lee@hotmail.com','Luxury Condo with Pool and Gym Access',1752708772,'789 Oak St.',3,3,2,3.00,15,'Treat yourself to the ultimate luxury experience in this beautiful condo with access to a pool and gym.',250.00,20.00),(1004,'anna.garcia@gmail.com','Coastal Cottage with Ocean Views',1218680506,'321 Beach Rd.',2,2,1,4.70,8,'Escape to the coast and enjoy breathtaking ocean views from this charming cottage.',150.00,15.00),(1005,'mohammed.ahmed@yahoo.com','Historic Home with Modern Amenities',1356213628,'987 Main St.',4,3,2,4.30,12,'Experience the best of both worlds in this beautifully restored historic home with all the modern amenities you need for a comfortable stay.',200.00,20.00),(1006,'lena.nguyen@gmail.com','Charming Bungalow in a Quiet Neighborhood',1250008059,'567 Maple St.',2,1,1,5.00,6,'This charming bungalow is the perfect place to relax and unwind in a quiet neighborhood.',100.00,10.00),(1007,'lena.nguyen@gmail.com','Stylish Studio Apartment in Downtown',1380805860,'246 Market St.',1,1,0,3.50,7,'Experience city living in style in this modern and chic studio apartment located in the heart of downtown.',90.00,10.00),(1008,'sara.kim@hotmail.com','Spacious Townhouse with Private Patio',1840010109,'789 Oak St.',3,3,1,3.20,10,'This spacious townhouse with a private patio is the perfect home away from home for your next family vacation.',180.00,20.00),(1009,'ahmed.hassan@gmail.com','Modern Apartment with Stunning Views',1036216956,'357 Hilltop Rd.',1,2,1,4.70,4,'Enjoy breathtaking views from this modern and stylish apartment located on a hilltop.',120.00,15.00),(1010,'jasmine.wong@yahoo.com','Beautifully Furnished Apartment in the City',1840019682,'123 Main St.',2,2,1,3.80,9,'This beautifully furnished apartment is located in the heart of the city and is perfect for a comfortable and convenient stay.',80.00,15.00);
 /*!40000 ALTER TABLE `airbnbs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,14 +90,12 @@ DROP TABLE IF EXISTS `hosts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hosts` (
-  `id` int NOT NULL,
   `host_name` varchar(150) NOT NULL,
   `email` varchar(50) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `gender` enum('Male','Female','Others','Not to tell') DEFAULT 'Not to tell',
   `language_code` char(2) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
+  PRIMARY KEY (`email`),
   UNIQUE KEY `phone` (`phone`),
   KEY `language_code` (`language_code`),
   CONSTRAINT `hosts_ibfk_1` FOREIGN KEY (`language_code`) REFERENCES `languages` (`code`)
@@ -110,7 +108,7 @@ CREATE TABLE `hosts` (
 
 LOCK TABLES `hosts` WRITE;
 /*!40000 ALTER TABLE `hosts` DISABLE KEYS */;
-INSERT INTO `hosts` VALUES (1001,'John Smith','john.smith@gmail.com','555-555-1234','Male','en'),(1002,'Mary Johnson','mary.johnson@yahoo.com','555-555-5678','Female','en'),(1003,'David Lee','david.lee@hotmail.com',NULL,'Male','ko'),(1004,'Anna Garcia','anna.garcia@gmail.com','555-555-2345','Female','es'),(1005,'Mohammed Ahmed','mohammed.ahmed@yahoo.com','555-555-6789','Male','ar'),(1006,'Lena Nguyen','lena.nguyen@gmail.com',NULL,'Female','vi'),(1007,'Javier Hernandez','javier.hernandez@yahoo.com','555-555-3456','Male','es'),(1008,'Sara Kim','sara.kim@hotmail.com','555-555-7890','Female','ko'),(1009,'Ahmed Hassan','ahmed.hassan@gmail.com','555-555-4567','Male','ar'),(1010,'Jasmine Wong','jasmine.wong@yahoo.com','555-555-8901','Female','zh');
+INSERT INTO `hosts` VALUES ('Ahmed Hassan','ahmed.hassan@gmail.com','555-555-4567','Male','ar'),('Anna Garcia','anna.garcia@gmail.com','555-555-2345','Female','es'),('David Lee','david.lee@hotmail.com',NULL,'Male','ko'),('Jasmine Wong','jasmine.wong@yahoo.com','555-555-8901','Female','zh'),('Javier Hernandez','javier.hernandez@yahoo.com','555-555-3456','Male','es'),('John Smith','john.smith@gmail.com','555-555-1234','Male','en'),('Lena Nguyen','lena.nguyen@gmail.com',NULL,'Female','vi'),('Mary Johnson','mary.johnson@yahoo.com','555-555-5678','Female','en'),('Mohammed Ahmed','mohammed.ahmed@yahoo.com','555-555-6789','Male','ar'),('Sara Kim','sara.kim@hotmail.com','555-555-7890','Female','ko');
 /*!40000 ALTER TABLE `hosts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,7 +145,7 @@ DROP TABLE IF EXISTS `orders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
   `order_num` varchar(10) NOT NULL,
-  `tenant` int NOT NULL,
+  `tenant` varchar(50) NOT NULL,
   `house_id` int NOT NULL,
   `check_in_date` date NOT NULL,
   `check_out_date` date NOT NULL,
@@ -158,7 +156,7 @@ CREATE TABLE `orders` (
   PRIMARY KEY (`order_num`),
   KEY `tenant` (`tenant`),
   KEY `house_id` (`house_id`),
-  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`tenant`) REFERENCES `tenants` (`id`),
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`tenant`) REFERENCES `tenants` (`email`),
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`house_id`) REFERENCES `airbnbs` (`house_id`),
   CONSTRAINT `orders_chk_1` CHECK (((`rate` >= 1) and (`rate` <= 5)))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -170,7 +168,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES ('ORD001',1001,1003,'2023-06-01','2023-06-07',150.00,30.00,'wait to comfired',NULL),('ORD002',1001,1007,'2023-08-15','2023-08-20',100.00,20.00,'processing',NULL),('ORD003',1003,1009,'2023-05-12','2023-05-18',120.00,25.00,'completed',4),('ORD004',1004,1008,'2023-07-21','2023-07-24',80.00,15.00,'processing',NULL),('ORD005',1005,1001,'2023-04-08','2023-04-10',90.00,20.00,'wait to comfired',NULL),('ORD006',1005,1005,'2023-10-02','2023-10-08',110.00,30.00,'processing',NULL),('ORD007',1005,1006,'2023-11-20','2023-11-25',100.00,25.00,'processing',NULL),('ORD008',1004,1010,'2023-09-12','2023-09-15',70.00,20.00,'cencaled',NULL),('ORD009',1006,1002,'2023-12-18','2023-12-24',130.00,35.00,'wait to comfired',NULL),('ORD010',1010,1003,'2023-08-01','2023-08-06',95.00,20.00,'completed',NULL);
+INSERT INTO `orders` VALUES ('ORD001','john.smith@gmail.com',1003,'2023-06-01','2023-06-07',150.00,30.00,'wait to comfired',NULL),('ORD002','john.smith@gmail.com',1007,'2023-08-15','2023-08-20',100.00,20.00,'processing',NULL),('ORD003','jdoe@gmail.com',1009,'2023-05-12','2023-05-18',120.00,25.00,'completed',4),('ORD004','linda.lee@gmail.com',1008,'2023-07-21','2023-07-24',80.00,15.00,'processing',NULL),('ORD005','michael.kim@outlook.com',1001,'2023-04-08','2023-04-10',90.00,20.00,'wait to comfired',NULL),('ORD006','michael.kim@outlook.com',1005,'2023-10-02','2023-10-08',110.00,30.00,'processing',NULL),('ORD007','michael.kim@outlook.com',1006,'2023-11-20','2023-11-25',100.00,25.00,'processing',NULL),('ORD008','linda.lee@gmail.com',1010,'2023-09-12','2023-09-15',70.00,20.00,'cencaled',NULL),('ORD009','emily.chen@gmail.com',1002,'2023-12-18','2023-12-24',130.00,35.00,'wait to comfired',NULL),('ORD010','dkim@outlook.com',1003,'2023-08-01','2023-08-06',95.00,20.00,'completed',NULL);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,14 +180,12 @@ DROP TABLE IF EXISTS `tenants`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tenants` (
-  `id` int NOT NULL,
   `name` varchar(20) NOT NULL,
   `email` varchar(50) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `gender` enum('Male','Female','Others','Not to tell') DEFAULT 'Not to tell',
   `language_code` char(2) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
+  PRIMARY KEY (`email`),
   UNIQUE KEY `phone` (`phone`),
   KEY `language_code` (`language_code`),
   CONSTRAINT `tenants_ibfk_1` FOREIGN KEY (`language_code`) REFERENCES `languages` (`code`)
@@ -202,7 +198,7 @@ CREATE TABLE `tenants` (
 
 LOCK TABLES `tenants` WRITE;
 /*!40000 ALTER TABLE `tenants` DISABLE KEYS */;
-INSERT INTO `tenants` VALUES (1001,'John Smith','john.smith@gmail.com','555-1234','Not to tell','EN'),(1002,'Mary Johnson','mary.johnson@outlook.com','555-5678','Not to tell','FR'),(1003,'John Doe','jdoe@gmail.com','555-2345','Not to tell','ZH'),(1004,'Linda Lee','linda.lee@gmail.com','555-6789','Female','EL'),(1005,'Michael Kim','michael.kim@outlook.com','555-3456','Male','JA'),(1006,'Emily Chen','emily.chen@gmail.com','555-7890','Female','EN'),(1007,'John Lee','jlee@NEU.edu','555-4321','Others','ZH'),(1008,'Emily Chen','emily.chen@outlook.com','555-8765','Female','FR'),(1009,'Mary Johnson','mjohnson@NEU.edu','555-2198','Others','EL'),(1010,'David Kim','dkim@outlook.com','555-7654','Male','JA');
+INSERT INTO `tenants` VALUES ('David Kim','dkim@outlook.com','555-7654','Male','JA'),('Emily Chen','emily.chen@gmail.com','555-7890','Female','EN'),('Emily Chen','emily.chen@outlook.com','555-8765','Female','FR'),('John Doe','jdoe@gmail.com','555-2345','Not to tell','ZH'),('John Lee','jlee@NEU.edu','555-4321','Others','ZH'),('John Smith','john.smith@gmail.com','555-1234','Not to tell','EN'),('Linda Lee','linda.lee@gmail.com','555-6789','Female','EL'),('Mary Johnson','mary.johnson@outlook.com','555-5678','Not to tell','FR'),('Michael Kim','michael.kim@outlook.com','555-3456','Male','JA'),('Mary Johnson','mjohnson@NEU.edu','555-2198','Others','EL');
 /*!40000 ALTER TABLE `tenants` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -234,10 +230,6 @@ UNLOCK TABLES;
 --
 -- Dumping events for database 'airbnb'
 --
-
---
--- Dumping routines for database 'airbnb'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -248,4 +240,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-16 19:00:11
+-- Dump completed on 2023-04-16 20:52:09

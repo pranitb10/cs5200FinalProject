@@ -2,13 +2,6 @@ CREATE DATABASE IF NOT EXISTS airbnb;
 SET FOREIGN_KEY_CHECKS=0;
 use airbnb;
 
--- the values in table languages and gender_pronouse are not changable
-
--- CREATE TABLE IF NOT EXISTS gender_pronous(
---   id INT NOT NULL,
---   pronous VARCHAR(50) NOT NULL,
---   PRIMARY KEY (id)
--- );
 
 CREATE TABLE IF NOT EXISTS languages (
   `name` VARCHAR(50) NOT NULL,
@@ -19,14 +12,13 @@ CREATE TABLE IF NOT EXISTS languages (
 
 DROP TABLE IF EXISTS  tenants;
 CREATE TABLE tenants (
-	id INT PRIMARY KEY,
 	`name`  VARCHAR(20) NOT NULL,
-	email VARCHAR(50) NOT NULL UNIQUE,
+	email VARCHAR(50) primary key,
 	phone VARCHAR(20) UNIQUE,
     gender ENUM("Male", "Female", "Others", "Not to tell") DEFAULT "Not to tell",
     language_code CHAR(2),
 
-	FOREIGN KEY (language_code) REFERENCES languages(`code`) 
+	FOREIGN KEY (language_code) REFERENCES languages(`code`)
     -- FOREIGN KEY (gender) REFERENCES gender_pronous(id)
 );
 
@@ -35,13 +27,11 @@ CREATE TABLE tenants (
 
 DROP TABLE IF EXISTS hosts;
 CREATE TABLE `hosts`(
-    id INT,
     host_name VARCHAR(150) NOT NULL,
-    email VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(50) primary key,
     phone VARCHAR(20) UNIQUE,
     gender ENUM("Male", "Female", "Others", "Not to tell") DEFAULT "Not to tell",
 	language_code CHAR(2),
-    PRIMARY KEY(id),
     FOREIGN KEY (language_code) REFERENCES languages(`code`)
 );
 
@@ -56,7 +46,7 @@ CREATE TABLE IF NOT EXISTS world_cities(
 DROP TABLE IF EXISTS airbnbs;
 CREATE TABLE airbnbs(
     house_id INT,
-	host_id INT,
+	`host` VARCHAR(50),
     title VARCHAR(100) NOT NULL,
     city_id INT,
     address VARCHAR(100),  -- Specific address
@@ -69,7 +59,7 @@ CREATE TABLE airbnbs(
     current_price DECIMAL(10,2),
     current_cleaning_fee DECIMAL(10,2),
     PRIMARY KEY (house_id),
-    FOREIGN KEY (host_id) REFERENCES hosts(id),
+    FOREIGN KEY (`host`) REFERENCES hosts(email),
     FOREIGN KEY (city_id) REFERENCES world_cities(city_id)
 );
 
@@ -82,11 +72,11 @@ CREATE TABLE airbnb_unavailable(
     PRIMARY KEY (house_id, start_date, end_date),
 	FOREIGN KEY (house_id) REFERENCES airbnbs(house_id)
 );
-    
+
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders(
 	order_num VARCHAR(10),
-    tenant INT NOT NULL,
+    tenant VARCHAR(50) NOT NULL,
     house_id INT NOT NULL,
     check_in_date date NOT NULL,
     check_out_date date NOT NULL,
@@ -95,6 +85,6 @@ CREATE TABLE orders(
     states ENUM("wait to comfired", "cencaled", "processing", "completed"),
     rate int CHECK (rate >= 1 AND rate <= 5) DEFAULT NULL,
     primary key (order_num),
-    FOREIGN KEY (tenant) REFERENCES tenants(id),
-    FOREIGN KEY (house_id) REFERENCES airbnbs(house_id) 
+    FOREIGN KEY (tenant) REFERENCES tenants(email),
+    FOREIGN KEY (house_id) REFERENCES airbnbs(house_id)
 );

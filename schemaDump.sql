@@ -151,7 +151,7 @@ CREATE TABLE `orders` (
   `check_out_date` date NOT NULL,
   `price_per_day` decimal(10,2) DEFAULT NULL,
   `cleaning_fee` decimal(10,2) DEFAULT NULL,
-  `states` enum('wait to comfired','cencaled','processing','completed') DEFAULT NULL,
+  `states` enum('wait to confirmed','cancelled','processing','completed') DEFAULT NULL,
   `rate` int DEFAULT NULL,
   PRIMARY KEY (`order_num`),
   KEY `tenant` (`tenant`),

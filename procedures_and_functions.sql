@@ -130,3 +130,8 @@ CALL `change_order_status_wait_to_confirmed`('1234567890');
 
 
 
+/*
+A proedure to 
+
+
+

@@ -82,7 +82,7 @@ CREATE TABLE orders(
     check_out_date date NOT NULL,
     price_per_day DECIMAL(10,2),
     cleaning_fee  DECIMAL(10,2),
-    states ENUM("wait to comfired", "cencaled", "processing", "completed"),
+    states ENUM("wait to confirmed", "cancelled", "processing", "completed"),
     rate int CHECK (rate >= 1 AND rate <= 5) DEFAULT NULL,
     primary key (order_num),
     FOREIGN KEY (tenant) REFERENCES tenants(email),

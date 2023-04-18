@@ -131,7 +131,45 @@ CALL `change_order_status_wait_to_confirmed`('1234567890');
 
 
 /*
-A proedure to 
+A procedure to show a list of all the completed orders by a tenant so that they can rate an order from that list.
+*/
+DELIMITER //
+
+CREATE PROCEDURE `get_completed_orders_to_rate` (IN `in_tenant_email` VARCHAR(50))
+BEGIN
+    SELECT o.order_num, o.check_in_date, o.check_out_date, o.price_per_day, o.cleaning_fee, o.states,
+           a.title AS airbnb_title, a.address AS airbnb_address, a.current_price AS airbnb_price
+    FROM orders o
+    INNER JOIN airbnbs a ON o.house_id = a.house_id
+    WHERE o.tenant = in_tenant_email AND o.states = 'completed'
+    ORDER BY o.check_out_date DESC;
+END //
+
+DELIMITER ;
+
+-- Test the procedure:
+CALL `get_completed_orders_to_rate`('example@gmail.com');
+
+
+
+
+/*
+A procedure to select an order from a list of completed orders generated previously and give a rating to that order.
+*/
+DELIMITER //
+
+CREATE PROCEDURE `rate_order_and_update_airbnb` (IN `in_order_num` VARCHAR(10), IN `in_rating` INT)
+BEGIN
+    UPDATE orders SET rate = in_rating WHERE order_num = in_order_num AND states = 'completed';
+    UPDATE airbnbs SET rating_times = rating_times + 1, 
+        average_rating = ((average_rating * rating_times) + in_rating) / (rating_times + 1)
+    WHERE house_id = (SELECT house_id FROM orders WHERE order_num = in_order_num);
+END //
+
+DELIMITER ;
+
+-- Test the procedure:
+CALL `rate_order_and_update_airbnb`('1234567890', 4);
 
 
 

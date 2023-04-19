@@ -51,14 +51,14 @@ VALUES
 	(1010, '2023-08-01', '2023-08-06');
 
 
-INSERT INTO orders (order_num, tenant, house_id, check_in_date, check_out_date, price_per_day, cleaning_fee, states, rate) VALUES
-('ORD001', 'john.smith@gmail.com', 1003, '2023-06-01', '2023-06-07', 150.00, 30.00, 'wait to comfired', NULL),
-('ORD002', 'john.smith@gmail.com', 1007, '2023-08-15', '2023-08-20', 100.00, 20.00, 'processing', NULL),
-('ORD003',  'jdoe@gmail.com', 1009, '2023-05-12', '2023-05-18', 120.00, 25.00, 'completed', 4),
-('ORD004', 'linda.lee@gmail.com', 1008, '2023-07-21', '2023-07-24', 80.00, 15.00, 'processing', NULL),
-('ORD005', 'michael.kim@outlook.com', 1001, '2023-04-08', '2023-04-10', 90.00, 20.00, 'wait to comfired', NULL),
-('ORD006', 'michael.kim@outlook.com', 1005, '2023-10-02', '2023-10-08', 110.00, 30.00, 'processing', NULL),
-('ORD007', 'michael.kim@outlook.com', 1006, '2023-11-20', '2023-11-25', 100.00, 25.00, 'processing', NULL),
-('ORD008', 'linda.lee@gmail.com', 1010, '2023-09-12', '2023-09-15', 70.00, 20.00, 'cencaled', NULL),
-('ORD009', 'emily.chen@gmail.com', 1002, '2023-12-18', '2023-12-24', 130.00, 35.00, 'wait to comfired', NULL),
-('ORD010', 'dkim@outlook.com', 1003, '2023-08-01', '2023-08-06', 95.00, 20.00, 'completed', NULL);
+    INSERT INTO orders (order_num, tenant, house_id, check_in_date, check_out_date, price_per_day, cleaning_fee, states, rate) VALUES
+    ('ORD001', 'john.smith@gmail.com', 1003, '2023-06-01', '2023-06-07', 150.00, 30.00, 'wait to comfired', NULL),
+    ('ORD002', 'john.smith@gmail.com', 1007, '2023-08-15', '2023-08-20', 100.00, 20.00, 'processing', NULL),
+    ('ORD003',  'jdoe@gmail.com', 1009, '2023-05-12', '2023-05-18', 120.00, 25.00, 'completed', 4),
+    ('ORD004', 'linda.lee@gmail.com', 1008, '2023-07-21', '2023-07-24', 80.00, 15.00, 'processing', NULL),
+    ('ORD005', 'michael.kim@outlook.com', 1001, '2023-04-08', '2023-04-10', 90.00, 20.00, 'wait to comfired', NULL),
+    ('ORD006', 'michael.kim@outlook.com', 1005, '2023-10-02', '2023-10-08', 110.00, 30.00, 'processing', NULL),
+    ('ORD007', 'michael.kim@outlook.com', 1006, '2023-11-20', '2023-11-25', 100.00, 25.00, 'processing', NULL),
+    ('ORD008', 'linda.lee@gmail.com', 1010, '2023-09-12', '2023-09-15', 70.00, 20.00, 'cancelled', NULL),
+    ('ORD009', 'emily.chen@gmail.com', 1002, '2023-12-18', '2023-12-24', 130.00, 35.00, 'wait to comfired', NULL),
+    ('ORD010', 'dkim@outlook.com', 1003, '2023-08-01', '2023-08-06', 95.00, 20.00, 'completed', NULL);

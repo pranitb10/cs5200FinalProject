@@ -9,17 +9,19 @@ user can update this information in edite_tenate
 */
 
 DROP PROCEDURE IF EXISTS create_tenant;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE create_tenant(
-	name_p  VARCHAR(20),
-	email_p VARCHAR(50),
-	phone_p VARCHAR(20)
+    IN p_name VARCHAR(20),
+    IN p_email VARCHAR(50),
+    IN p_phone VARCHAR(20),
+    IN p_gender ENUM("Male", "Female", "Others", "Not to tell"),
+    IN p_language_code CHAR(2)
 )
 BEGIN
-	INSERT tenants ( `name`, email, phone)
-    values (name_p, email_p, phone_p);
-
-	END $$
+    -- Insert the new tenant into the tenants table
+    INSERT INTO tenants (name, email, phone, gender, language_code)
+    VALUES (p_name, p_email, p_phone, p_gender, p_language_code);
+END //
 	DELIMITER  ;
 
 
@@ -67,19 +69,22 @@ gender as default "not to tell", language as NULL,
 host can update this information in edite_tenate
 */
 
-DROP PROCEDURE IF EXISTS create_host;
-DELIMITER $$
+DELIMITER //
+
 CREATE PROCEDURE create_host(
-	name_p  VARCHAR(20),
-	email_p VARCHAR(50),
-	phone_p VARCHAR(20)
+    IN p_host_name VARCHAR(150),
+    IN p_email VARCHAR(50),
+    IN p_phone VARCHAR(20),
+    IN p_gender ENUM("Male", "Female", "Others", "Not to tell"),
+    IN p_language_code CHAR(2)
 )
 BEGIN
-	INSERT `hosts` ( host_name, email, phone)
-    values (name_p, email_p, phone_p);
+    -- Insert the new host into the hosts table
+    INSERT INTO hosts (host_name, email, phone, gender, language_code)
+    VALUES (p_host_name, p_email, p_phone, p_gender, p_language_code);
+END //
 
-	END $$
-	DELIMITER  ;
+DELIMITER ;
 
 
 -- setting the account
@@ -322,4 +327,24 @@ DELIMITER $$
     AND house_id = house_id_p
     AND end_date >= CURDATE();
     END $$
+DELIMITER ;
+
+
+/*
+A procedure to return the name of the host based on the email provided.
+*/
+DELIMITER $$
+
+CREATE PROCEDURE get_host_name(
+    IN p_email VARCHAR(50),
+    OUT p_name VARCHAR(150)
+)
+BEGIN
+    -- Select the host's name from the hosts table
+    SELECT host_name
+    INTO p_name
+    FROM hosts
+    WHERE email = p_email;
+END $$
+
 DELIMITER ;

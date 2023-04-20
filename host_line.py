@@ -4,7 +4,7 @@ def call_airbnbdb():
     conn = pymysql.connect(
         host = "localhost",
         user = 'root',
-        password = '12345678',
+        password = 'nasarp<>;-D',
         database = 'airbnb'
     )
     return conn

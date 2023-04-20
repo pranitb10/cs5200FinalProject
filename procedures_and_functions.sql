@@ -4,54 +4,81 @@ USE airbnb;
 /*
 A procedure to search for hosts during login.
 */
-DROP PROCEDURE IF EXISTS `check_host_login`;
+DROP PROCEDURE IF EXISTS `login_host`;
 DELIMITER //
 
-CREATE PROCEDURE `check_host_login` (IN `in_email` VARCHAR(50), IN `in_password` VARCHAR(50), OUT `out_result` INT)
+CREATE PROCEDURE login_host(
+    IN p_email VARCHAR(50),
+    OUT p_result VARCHAR(150)
+)
 BEGIN
-    DECLARE password_hash CHAR(60);
-
-    SELECT `password` INTO password_hash FROM `hosts` WHERE `email` = in_email;
-
-    IF (password_hash IS NOT NULL AND in_password = password_hash) THEN
-        SET out_result = 1;
+    DECLARE v_name VARCHAR(150);
+    
+    -- Check if the email and phone match a record in the hosts table
+    SELECT host_name INTO v_name
+    FROM hosts
+    WHERE email = p_email;
+    
+    -- If a matching record is found, log the host in
+    IF v_name IS NOT NULL THEN
+        SET p_result = CONCAT('Welcome, ', v_name, '!');
     ELSE
-        SET out_result = 0;
+        SET p_result = 'Invalid login credentials.';
     END IF;
 END //
 
 DELIMITER ;
 
 -- Test the procedure:
-CALL `check_host_login`('example@gmail.com', 'userpassword', @result);
-SELECT @result;
+-- Call the procedure with a valid email
+CALL login_host('john@example.com', @result);
+SELECT @result; -- Expected output: "Welcome, John Doe!"
+
+-- Call the procedure with an invalid email
+CALL login_host('invalid@example.com', @result);
+SELECT @result; -- Expected output: "Invalid login credentials."
+
 
 
 
 /*
 A procedure to search for tenants during login.
 */
-DROP PROCEDURE IF EXISTS `check_tenant_login`;
+DROP PROCEDURE IF EXISTS `login_tenant`;
 DELIMITER //
 
-CREATE PROCEDURE `check_tenant_login` (IN `in_email` VARCHAR(50), IN `in_password` VARCHAR(50), OUT `out_result` INT)
+CREATE PROCEDURE login_tenant(
+    IN p_email VARCHAR(50),
+    OUT p_result VARCHAR(150)
+)
 BEGIN
-    DECLARE password_hash CHAR(60);
-
-    SELECT `password` INTO password_hash FROM `tenants` WHERE `email` = in_email;
-
-    IF (password_hash IS NOT NULL AND in_password = password_hash) THEN
-        SET out_result = 1;
+    DECLARE v_name VARCHAR(20);
+    
+    -- Check if the email matches a record in the tenants table
+    SELECT name INTO v_name
+    FROM tenants
+    WHERE email = p_email;
+    
+    -- If a matching record is found, log the tenant in
+    IF v_name IS NOT NULL THEN
+        SET p_result = CONCAT('Welcome, ', v_name, '!');
     ELSE
-        SET out_result = 0;
+        SET p_result = 'Invalid login credentials.';
     END IF;
 END //
+
 
 DELIMITER ;
 
 -- Test the procedure:
-CALL `check_tenant_login`('example@gmail.com', 'userpassword', @result);
-SELECT @result;
+-- Call the procedure with a valid email
+CALL login_tenant('jane@example.com', @result);
+SELECT @result; -- Expected output: "Welcome, Jane!"
+
+-- Call the procedure with an invalid email
+CALL login_tenant('invalid@example.com', @result);
+SELECT @result; -- Expected output: "Invalid login credentials."
+
 
 
 

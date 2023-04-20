@@ -1,6 +1,6 @@
 USE airbnb;
 
--- sign up as an tenenate 
+-- sign up as an tenenate
 /*
 creat_tenenate([name, email, phone, [gender], [language_id])
 create a new id inside of the procedure.
@@ -22,10 +22,7 @@ BEGIN
 	END $$
 	DELIMITER  ;
 
-SET @email_t = "verazzz@gmail.com";
-CALL create_tenant("Vera", @email_t, "721-342-9329");
-SELECT * FROM tenants where email = @email_t;
--- delete FROM tenants where email = @email_t;
+
 
 -- setting the account
 /*
@@ -105,7 +102,8 @@ BEGIN
 		-- If the insert language name is NOT NULL, check it is valid language name
 		SELECT `code` INTO language_code_p FROM languages WHERE `name` = language_p;
 		IF language_code_p IS NULL THEN
-			SELECT "there is no such language option";
+			SELECT ERROR_PROCEDURE() AS ErrorProcedure;
+
 		ELSE
 			UPDATE hosts SET language_code = language_code_p WHERE email = email_p;
 		END IF;
@@ -246,8 +244,15 @@ DELIMITER $$
 		start_date_p DATE
 	)
 	BEGIN
-    DELETE FROM airbnb_unavailable
-    WHERE house_id = house_id_p AND start_date = start_date_p;
+    declare state VARCHAR(50);
+	SELECT states into state FROM airbnb_unavailable AS U
+    LEFT JOIN orders AS O using(house_id)
+    WHERE  house_id = house_id_p
+    AND start_date = start_date_p;
+    IF state != "processing" THEN
+		DELETE FROM airbnb_unavailable
+		WHERE house_id = house_id_p AND start_date = start_date_p;
+	END IF;
     END $$
 DELIMITER ;
 
@@ -278,7 +283,7 @@ DELIMITER ;
 -- update_orders_currentdate
 /*
 When the check_out_date <= current date
-Update the states to "completed" fors orders which is "processing"
+Update the states to "completed" for orders which is "processing"
 
 Update the states to "cencaled" for orders which is "wait to comfired"
 
@@ -294,4 +299,27 @@ CREATE procedure update_orders_currentdate()
       UPDATE orders SET states = 'cancelled'
 	  WHERE states = 'wait to comfired' AND check_out_date <= CURDATE();
 END $$
+DELIMITER ;
+
+
+
+-- Show all date of house date host can remove the unabailable
+/*
+
+*/
+DROP PROCEDURE IF EXISTS dislay_removable_date;
+
+DELIMITER $$
+	CREATE PROCEDURE dislay_removable_date(
+		host_id_p VARCHAR(50),
+        house_id_p int
+	)
+	BEGIN
+    SELECT 	house_id, start_date, end_date, states FROM airbnb_unavailable AS U
+    LEFT JOIN airbnbs AS A USING(house_id)
+    LEFT JOIN orders AS O using(house_id)
+    WHERE  host = host_id_p
+    AND house_id = house_id_p
+    AND end_date >= CURDATE();
+    END $$
 DELIMITER ;

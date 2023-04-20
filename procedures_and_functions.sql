@@ -21,9 +21,9 @@ BEGIN
     
     -- If a matching record is found, log the host in
     IF v_name IS NOT NULL THEN
-        SET p_result = CONCAT('Welcome, ', v_name, '!');
+        SET p_result = 1;
     ELSE
-        SET p_result = 'Invalid login credentials.';
+        SET p_result = 0;
     END IF;
 END //
 
@@ -61,9 +61,9 @@ BEGIN
     
     -- If a matching record is found, log the tenant in
     IF v_name IS NOT NULL THEN
-        SET p_result = CONCAT('Welcome, ', v_name, '!');
+        SET p_result = 1;
     ELSE
-        SET p_result = 'Invalid login credentials.';
+        SET p_result = 0;
     END IF;
 END //
 
@@ -219,9 +219,9 @@ DELIMITER //
 CREATE PROCEDURE `check_country` (IN `in_country` VARCHAR(225), OUT `out_response` VARCHAR(225))
 BEGIN
     IF EXISTS(SELECT 1 FROM world_cities WHERE country = in_country) THEN
-        SET out_response = CONCAT('Thanks for selecting ', in_country, '. Please enter a city now where you are looking for an Airbnb.');
+        SET out_response = 1;
     ELSE
-        SET out_response = CONCAT('No Airbnb is available in ', in_country, ' right now.');
+        SET out_response = 0;
     END IF;
 END //
 
@@ -243,9 +243,9 @@ DELIMITER //
 CREATE PROCEDURE `check_city` (IN `in_city` VARCHAR(225), OUT `out_response` VARCHAR(225))
 BEGIN
     IF EXISTS(SELECT 1 FROM world_cities WHERE city = in_city) THEN
-        SET out_response = CONCAT('Thanks for selecting ', in_city, '. Please enter a start date and an end date now.');
+        SET out_response = 1;
     ELSE
-        SET out_response = CONCAT('No Airbnb is available in ', in_city, ' right now.');
+        SET out_response = 0;
     END IF;
 END //
 
@@ -304,8 +304,6 @@ CREATE PROCEDURE `create_order` (
     IN `in_house_id` INT,
     IN `in_start_date` DATE,
     IN `in_end_date` DATE,
-    IN `in_price_per_day` DECIMAL(10,2),
-    IN `in_cleaning_fee` DECIMAL(10,2),
     OUT `out_order_num` VARCHAR(10)
 )
 BEGIN
@@ -320,7 +318,7 @@ DELIMITER ;
 
 
 -- Test the procedure:
-CALL `create_order`('johndoe@example.com', 1234, '2023-05-01', '2023-05-08', 100.00, 25.00, @order_num);
+CALL `create_order`('johndoe@example.com', 1234, '2023-05-01', '2023-05-08', @order_num);
 SELECT @order_num;
 
 
@@ -343,6 +341,78 @@ BEGIN
              OR NEW.check_out_date BETWEEN check_in_date AND check_out_date
              OR (NEW.check_in_date <= check_in_date AND NEW.check_out_date >= check_out_date));
     END IF;
+END //
+
+DELIMITER ;
+
+
+
+/*
+A procedure to take start_date from a tenant as an input.
+*/
+DROP PROCEDURE IF EXISTS `validate_start_date`;
+DELIMITER //
+
+CREATE PROCEDURE validate_start_date(
+	IN input_date VARCHAR(10),
+	OUT p_result VARCHAR(150)
+)
+BEGIN
+  DECLARE valid_date DATE;
+  SET valid_date = STR_TO_DATE(input_date, '%Y-%m-%d');
+
+  IF valid_date IS NULL THEN
+    SET p_result = 0;
+  ELSEIF input_date < CURDATE() THEN
+    SET p_result = -1;
+  ELSE
+    SET p_result = 1;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+
+/*
+A procedure to take end_date from a tenant as an input.
+*/
+DROP PROCEDURE IF EXISTS `validate_end_dat`;
+DELIMITER //
+
+CREATE PROCEDURE validate_end_date(
+	IN input_date VARCHAR(10),
+	OUT p_result VARCHAR(150)
+)
+BEGIN
+  DECLARE valid_date DATE;
+  SET valid_date = STR_TO_DATE(input_date, '%Y-%m-%d');
+
+  IF valid_date IS NULL THEN
+    SET p_result = 0;
+  ELSEIF input_date < CURDATE() THEN
+    SET p_result = -1;
+  ELSE
+    SET p_result = 1;
+  END IF;
+END //
+
+DELIMITER ;
+
+
+
+/*
+A procedure to produce a list of all orders made by a tenant.
+*/
+DELIMITER //
+
+CREATE PROCEDURE list_orders_by_tenant(IN tenant_email VARCHAR(50))
+BEGIN
+  SELECT o.order_num, h.title, c.city, c.country, o.check_in_date, o.check_out_date, o.price_per_day, o.cleaning_fee, o.states, o.rate
+  FROM orders o
+  JOIN airbnbs h ON o.house_id = h.house_id
+  JOIN world_cities c ON h.city_id = c.city_id
+  WHERE o.tenant = tenant_email;
 END //
 
 DELIMITER ;

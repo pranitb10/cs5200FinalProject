@@ -38,7 +38,7 @@ def create_new_tenant() :
     t_phone = input("Enter your phone: ")
     create_new_tenant = cursor.callproc("create_tenant", [t_name, t_email, t_phone]) 
 
-def host_login() :
+def host_login(host_login_email) :
     # Call the login_host procedure and print the result
     result_args = cursor.callproc("login_host", [email, " "])
     result = result_args[-1]
@@ -47,7 +47,7 @@ def host_login() :
     else:
        print("Login Unsuccessful. No such user exists.") 
 
-def tenant_login():
+def tenant_login(tenant_login_email):
     # Call the login_tenant procedure and print the result
     result_args = cursor.callproc("login_tenant", [email, " "])
     result = result_args[-1]
@@ -56,7 +56,7 @@ def tenant_login():
     else:
        print("Login Unsuccessful. No such user exists.")
 
-def tenant_menu():
+def tenant_menu(tenant_email):
     loop = True
     while(loop):
         menu_options = input("Home Screen Menu. \n Please enter any of the below given options (any number) to perform an action as a tenant. \n" + 
@@ -117,10 +117,11 @@ def tenant_menu():
         else:
             print("Please enter a valid response to the menu options.")
 
-#def host_menu():
-#    loop = True
-#    while(loop):
-            
+def host_menu(host_email):
+    loop = True
+    while(loop):
+        menu_options = input("Home Screen Menu. \n Please enter any of the below given options (any number) to perform an action as a host. \n" + 
+        "1) Search Airbnbs. \n2) See all orders. \n3) Rate a completed order. \n4)Edit your tenant profile. \n5) Logout. \n") 
 
 
 
@@ -144,10 +145,11 @@ else:
 
     # Call the appropriate stored procedure based on user type
     if user_type.lower() == "host":
-        host_login()
+        host_login(email)
+        host_menu(email)
     elif user_type.lower() == "tenant":
-        tenant_login()
-        tenant_menu()
+        tenant_login(email)
+        tenant_menu(email)
     else:
         print("Invalid user type.")
     

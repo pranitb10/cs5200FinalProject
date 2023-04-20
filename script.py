@@ -106,10 +106,21 @@ def tenant_menu():
             rate_airbnb = cursor.callproc("rate_order_and_update_airbnb", [order_no, rating])
             print("You've successfully rated a ", rating, " to an Airbnb having order number ", order_no)
         elif menu_options == '4':
+            print("You've decided to edit your profile. \n. Here you can edit your gender and language.\n")
+            edit_gender = input("Please enter the gender you want to change to. \nYou can choose from Male, Female or Not to tell.\n")
+            edit_language = input("Please enter a language you want to change to.")
+            edit_tenant_profile = cursor.callproc("edit_tenant", [email, edit_gender, edit_language])
+            print("You have successfully changed your gender to ", edit_gender, " and your language of preferrence to ", edit_language)
+        elif menu_options == '5':
             print("You've been logged out. Thank you!")
             loop = False
         else:
             print("Please enter a valid response to the menu options.")
+
+#def host_menu():
+#    loop = True
+#    while(loop):
+            
 
 
 

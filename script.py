@@ -165,7 +165,7 @@ def tenant_menu(tenant_email):
             
             order_no = input("\n\nPlease enter the order number you want to rate based on your living experience at the Airbnb. \n")
             rating = input("Please enter your rating on a scale of 0-5 for the selected Airbnb. \n")
-            query2 = "CALL rate_order_and_update_airbn(%s, %d)"
+            query2 = "CALL rate_order_and_update_airbnb(%s, %s)"
             result_arg = cursor.execute(query2, (order_no, rating))
             print("\n\nYou've successfully rated a ", rating, " to an Airbnb having order number ", order_no, "\n\n")
 
@@ -185,7 +185,7 @@ def tenant_menu(tenant_email):
 
         elif menu_options == '5':
             query = "CALL get_tenant_details(%s)"
-            result_args = cursor.execute(query, (email))
+            result_args = cursor.execute(query, (email,))
             profile_details = cursor.fetchall()
             attr, info = readData(profile_details)
             showPandasDataFrame(attr, info)
@@ -205,7 +205,8 @@ def host_menu(host_email):
         menu_options = input("Home Screen Menu. \n\n Please enter any of the below given options (any number)" + 
         " to perform an action as a host. \n1) Display all your owned Airbnbs. \n2) Post a new Airbnb. \n3) Mark an Airbnb unavailable." + 
         " \n4) Edit price for an Airbnb. \n5) Show all orders. \n6) Show all 'wait-to-confirmed' orders. \n7) Confirm an order." + 
-        " \n8) Reject an order. \n9) To complete an order. \n10) Edit your Host profile. \n11) Give Profile Details. \n12) Logout. \n\n") 
+        " \n8) Reject an order. \n9) To complete an order. \n10 To remove an unavailable airbnb. \n11) Edit your Host profile." + 
+        "\n12) Give Profile Details. \n13) Logout. \n\n") 
 
         if menu_options == '1':
             query = "CALL display_airbnb(%s)"
@@ -217,7 +218,7 @@ def host_menu(host_email):
         elif menu_options == '2':
             host_name_query = "CALL get_host_name(%s)"
             host_name_arg = cursor.execute(host_name_query, (email))
-            host_name = cursor.fetchall()[0][host_name_arg]
+            host_name = cursor.fetchall()[0]['host_name']
 
             a_title = input("\n\nPlease enter a title for the new airbnb: \n")
 
@@ -225,6 +226,9 @@ def host_menu(host_email):
 
             get_city_query = "CALL display_cities(%s)"
             city_args = cursor.execute(get_city_query, (a_country))
+            all_cities = cursor.fetchall()
+            attr, info = readData(all_cities)
+            showPandasDataFrame(attr, info)
 
             a_city = input("\n\nPlease enter the ID of the city from the above list where you want to create your new Airbnb: \n")
 
@@ -242,8 +246,8 @@ def host_menu(host_email):
 
             a_cleaning_fee = input("\n\nPlease enter the cleaning fee for your new Airbnb: \n")
 
-            query = "SELECT create_airbnb(%s, %s, %d, %s, %d, %d, %d, %s, %f, %f) AS new_airbnb"
-            result_args = cursor.execute(query, (host_name, a_title, a_city, a_address, a_rooms, a_beds, a_parking, 
+            query = "SELECT create_airbnb(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) AS new_airbnb"
+            result_args = cursor.execute(query, (email, a_title, a_city, a_address, a_rooms, a_beds, a_parking, 
             a_description, a_price, a_cleaning_fee ))
             connection.commit()
             print("\n\nYou've successfully created the new Airbnb named ", a_title)
@@ -261,7 +265,7 @@ def host_menu(host_email):
 
             a_end_date = input("\n\nPlease enter the end date until when the Airbnb is unavailable: \n")
 
-            unavailable_query = "CALL add_unavailable(%d, %s, %s)"
+            unavailable_query = "CALL add_unavailable(%s, %s, %s)"
             unavailable_args = cursor.execute(unavailable_query, (a_house_id, a_start_date, a_end_date))
             connection.commit()
             print("\n\nYou have successfully marked the Airbnb ", a_house_id, " unavailable from ", a_start_date, " to ", a_end_date)
@@ -279,7 +283,7 @@ def host_menu(host_email):
 
             a_edited_cleaning = input("\n\nPlease enter the updated cleaning fee for this Airbnb: \n")
 
-            unavailable_query = "CALL add_unavailable(%d, %f, %f)"
+            unavailable_query = "CALL edite_price(%s, %s, %s)"
             unavailable_args = cursor.execute(unavailable_query, (a_house_id, a_edited_price, a_edited_cleaning))
             connection.commit()
             print("\n\nYou have successfully changed the price for the Airbnb ", a_house_id, " to ", a_edited_price, 
@@ -332,6 +336,7 @@ def host_menu(host_email):
             processing_orders_args = cursor.execute(processing_orders_query, (email))
             all_processing_orders = cursor.fetchall()
             attr, info = readData(all_processing_orders)
+            showPandasDataFrame(attr, info)
 
             order_input = input("\n\nPlease enter the order ID that is to be updated to completed: \n")
             completed_query = "CALL update_order_status_completed(%s)"
@@ -340,6 +345,22 @@ def host_menu(host_email):
             print("\n\nYou have successfully completed the order ", order_id)
 
         elif menu_options == '10':
+            show_unavailable_airbnb_query = "CALL show_unavailable_airbnbs_for_host(%s)"
+            unavailable_airbnb_args = cursor.execute(show_unavailable_airbnb_query, (email))
+            list_unavailable_airbnbs = cursor.fetchall()
+            attr, info = readData(list_unavailable_airbnbs)
+            showPandasDataFrame(attr, info)
+
+            input_airbnb_house_id = input("\n\nPlease enter the House ID of the airbnb that you want to remove from unavailable: \n")
+            input_airbnb_start_date = input("\n\nPlease enter the Start Date for this airbnb: \n")
+
+            remove_unavailable_query = "CALl remove_unavailable(%s, %s)"
+            remove_unavailable_args = cursor.execute(remove_unavailable_query, (input_airbnb_house_id, input_airbnb_start_date))
+            connection.commit()
+            print("\n\n You have successfully removed the airbnb ", input_airbnb_house_id, " from unavailable and now it's" + 
+            " available from the date ", input_airbnb_start_date)
+
+        elif menu_options == '11':
             print("\nYou've decided to edit your profile. \n. Here you can edit your gender and language.\n")
             edit_gender = input("\nPlease enter the gender you want to change to. \nYou can choose from Male, Female, Others or Not to tell.\n")
 
@@ -353,15 +374,15 @@ def host_menu(host_email):
 
             print("\nYou have successfully changed your gender to ", edit_gender, " and your language of preferrence to ", edit_language)
 
-        elif menu_options == '11':
+        elif menu_options == '12':
             query = "CALL get_host_details(%s)"
-            result_args = cursor.execute(query, (email,))
+            result_args = cursor.execute(query, (email))
             profile_details = cursor.fetchall()
             print(profile_details)
             attr, info = readData(profile_details)
             showPandasDataFrame(attr, info)
 
-        elif menu_options == '12':
+        elif menu_options == '13':
             print("\n\nYou've been logged out. Thank you!\n")
             loop = False
         else:

@@ -177,8 +177,8 @@ BEGIN
 	DECLARE new_house_id, city_p INT;
     SELECT MAX(house_id) into new_house_id FROM airbnbs;
     SET new_house_id = new_house_id +1;
-    INSERT INTO airbnbs(house_id, `host`, title, city_id, address, num_of_rooms,
-						num_of_beds, num_parking, `description`, current_price, current_cleaning_fee)
+    INSERT INTO airbnbs(house_id, host, title, city_id, address, num_of_rooms,
+						num_of_beds, num_parking, description, current_price, current_cleaning_fee)
 	VALUES(new_house_id, host_p, title_p, city_id_p, address_p, num_of_rooms_p, num_of_beds_p,
 			num_parking_p, description_p, current_price_p, current_cleaning_fee_p);
 	return new_house_id;
@@ -222,28 +222,43 @@ DROP PROCEDURE IF EXISTS remove_unavailable;
 
 DELIMITER //
 	CREATE PROCEDURE remove_unavailable(
-		house_id_p int,
-		start_date_p DATE
+		IN p_house_id INT,
+		IN p_start_date DATE
 	)
 	BEGIN
-    declare state VARCHAR(50);
-	SELECT states into state FROM airbnb_unavailable AS U
-    LEFT JOIN orders AS O using(house_id)
-    WHERE  house_id = house_id_p
-    AND start_date = start_date_p;
-    
-    IF state = 'processing' THEN
-    -- Report error
-		SIGNAL SQLSTATE '45000'
-			SET MESSAGE_TEXT = 'Invalid genre provided.';
-	ELSE
-		DELETE FROM airbnb_unavailable
-		WHERE house_id = house_id_p AND start_date = start_date_p;
-		
-	END IF;
-    END $$
-DELIMITER ; 
+		DECLARE airbnb_count INT DEFAULT 0;
+		DECLARE state VARCHAR(50);
+	  
+		-- Check if the given airbnb is present in the table
+		SELECT DISTINCT COUNT(*) INTO airbnb_count FROM airbnb_unavailable 
+		WHERE house_id = p_house_id 
+		AND start_date = p_start_date LIMIT 1;
+	  
+		-- If the airbnb exists, get its status
+		IF airbnb_count > 0 THEN
+			SELECT DISTINCT states into state FROM airbnb_unavailable
+			LEFT JOIN orders AS O using(house_id)
+			WHERE house_id = p_house_id 
+			AND start_date = p_start_date LIMIT 1;
+			
+			-- If the airbnb status is not processing, delete it from the table
+			IF state <> 'processing' THEN
+				DELETE FROM airbnb_unavailable 
+				WHERE house_id = p_house_id 
+				AND start_date = p_start_date;
+				SELECT 'Airbnb removed successfully' AS result;
+			ELSE
+				SIGNAL SQLSTATE '45000';
+				SELECT 'Cannot remove Airbnb with processing status' AS result;
+			END IF;
+		ELSE
+			SELECT 'Airbnb not found' AS result;
+		END IF;
+	END $$
 
+DELIMITER ;
+
+CALL remove_unavailable(1004, '2023-04-25');
 
 -- Edite price
 /*
@@ -318,13 +333,11 @@ A procedure to return the name of the host based on the email provided.
 DELIMITER $$
 
 CREATE PROCEDURE get_host_name(
-    IN p_email VARCHAR(50),
-    OUT p_name VARCHAR(150)
+    IN p_email VARCHAR(50)
 )
 BEGIN
     -- Select the host's name from the hosts table
     SELECT host_name
-    INTO p_name
     FROM hosts
     WHERE email = p_email;
 END $$

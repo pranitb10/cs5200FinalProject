@@ -545,3 +545,23 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+
+/*
+A procedure to show all the airbnbs in the airbnb_unavailable table."
+*/
+DROP PROCEDURE IF EXISTS `show_unavailable_airbnbs_for_host`;
+DELIMITER //
+
+CREATE PROCEDURE show_unavailable_airbnbs_for_host(IN p_email VARCHAR(50))
+BEGIN
+    SELECT ua.house_id, ua.start_date, ua.end_date
+    FROM airbnb_unavailable ua
+    JOIN airbnbs a ON ua.house_id = a.house_id
+    JOIN hosts h ON a.host = h.email
+    WHERE h.email = p_email;
+END //
+
+
+DELIMITER ;

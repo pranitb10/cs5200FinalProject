@@ -29,7 +29,7 @@ CREATE TABLE `airbnb_unavailable` (
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
   PRIMARY KEY (`house_id`,`start_date`,`end_date`),
-  CONSTRAINT `airbnb_unavailable_ibfk_1` FOREIGN KEY (`house_id`) REFERENCES `airbnbs` (`house_id`)
+  CONSTRAINT `airbnb_unavailable_ibfk_1` FOREIGN KEY (`house_id`) REFERENCES `airbnbs` (`house_id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

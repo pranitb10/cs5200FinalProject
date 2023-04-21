@@ -57,7 +57,7 @@ phomne can be NULL
 gender as default "not to tell", language as NULL,
 host can update this information in edite_tenate
 */
-
+DROP PROCEDURE IF EXISTS create_host;
 DELIMITER //
 
 CREATE PROCEDURE create_host(
@@ -210,15 +210,17 @@ DELIMITER $$
 DELIMITER ;
 
 
+
 -- remove the airbnb a priod of time when the airbnb is unvailable
 /*
 Because every unvaileble for each airbnb has unique start date and end date,
 so we only need one of the dates to filter.
 remove_unavailable(house_id_p, start_date_p)
 */
+
 DROP PROCEDURE IF EXISTS remove_unavailable;
 
-DELIMITER $$
+DELIMITER //
 	CREATE PROCEDURE remove_unavailable(
 		IN p_house_id INT,
 		IN p_start_date DATE

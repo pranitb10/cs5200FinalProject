@@ -52,7 +52,12 @@ def create_new_host() :
     host_email = input("Enter your email: \n")
     host_phone = input("Enter your phone: \n")
     host_gender = input("Enter your gender (Male, Female, Others, or Not to tell): \n")
-    host_language = input("Enter your preferred language: \n")
+    language_query = "CALL get_languages()"
+    language_args = cursor.execute(language_query)
+    language_result = cursor.fetchall()
+    attr, info = readData(language_result)
+    showPandasDataFrame(attr, info)
+    host_language = input("Enter your preferred language code from the above list: \n")
     query = "CALL create_host(%s, %s, %s, %s, %s)"
     cursor.execute(query, (host_name, host_email, host_phone, host_gender, host_language))
     print("Welcome new host ", host_name, "\n\n")
@@ -65,7 +70,12 @@ def create_new_tenant() :
     t_email = input("Enter your email: \n")
     t_phone = input("Enter your phone: \n")
     t_gender = input("Enter your gender (Male, Female, Others, or Not to tell): \n")
-    t_language = input("Enter your preferred language: \n")
+    language_query = "CALL get_languages()"
+    language_args = cursor.execute(language_query)
+    language_result = cursor.fetchall()
+    attr, info = readData(language_result)
+    showPandasDataFrame(attr, info)
+    t_language = input("Enter your preferred language code from the above list: \n")
     query = "CALL create_tenant(%s, %s, %s, %s, %s)"
     cursor.execute(query, (t_name, t_email, t_phone, t_gender, t_language))
     print("Welcome new tenant ", t_name, "\n\n")
@@ -185,7 +195,7 @@ def tenant_menu(tenant_email):
 
         elif menu_options == '5':
             query = "CALL get_tenant_details(%s)"
-            result_args = cursor.execute(query, (email,))
+            result_args = cursor.execute(query, (email))
             profile_details = cursor.fetchall()
             attr, info = readData(profile_details)
             showPandasDataFrame(attr, info)
@@ -378,7 +388,6 @@ def host_menu(host_email):
             query = "CALL get_host_details(%s)"
             result_args = cursor.execute(query, (email))
             profile_details = cursor.fetchall()
-            print(profile_details)
             attr, info = readData(profile_details)
             showPandasDataFrame(attr, info)
 

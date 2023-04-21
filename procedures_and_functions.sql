@@ -6,6 +6,7 @@ A procedure to return host profile details.
 */
 DROP PROCEDURE IF EXISTS `get_host_details`;
 DELIMITER $$
+
 CREATE PROCEDURE get_host_details(
     IN p_email VARCHAR(50)
 )

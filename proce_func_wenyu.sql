@@ -220,23 +220,43 @@ DROP PROCEDURE IF EXISTS remove_unavailable;
 
 DELIMITER $$
 	CREATE PROCEDURE remove_unavailable(
-		house_id_p int,
-		start_date_p DATE
+		IN p_house_id INT,
+		IN p_start_date DATE
 	)
 	BEGIN
-    declare state VARCHAR(50);
-	SELECT states into state FROM airbnb_unavailable AS U
-    LEFT JOIN orders AS O using(house_id)
-    WHERE  house_id = house_id_p
-    AND start_date = start_date_p;
-    IF state != "processing" THEN
-		DELETE FROM airbnb_unavailable
-		WHERE house_id = house_id_p AND start_date = start_date_p;
-	END IF;
-    END $$
+		DECLARE airbnb_count INT DEFAULT 0;
+		DECLARE state VARCHAR(50);
+	  
+		-- Check if the given airbnb is present in the table
+		SELECT DISTINCT COUNT(*) INTO airbnb_count FROM airbnb_unavailable 
+		WHERE house_id = p_house_id 
+		AND start_date = p_start_date LIMIT 1;
+	  
+		-- If the airbnb exists, get its status
+		IF airbnb_count > 0 THEN
+			SELECT DISTINCT states into state FROM airbnb_unavailable
+			LEFT JOIN orders AS O using(house_id)
+			WHERE house_id = p_house_id 
+			AND start_date = p_start_date LIMIT 1;
+			
+			-- If the airbnb status is not processing, delete it from the table
+			IF state <> 'processing' THEN
+				DELETE FROM airbnb_unavailable 
+				WHERE house_id = p_house_id 
+				AND start_date = p_start_date;
+				SELECT 'Airbnb removed successfully' AS result;
+			ELSE
+				SIGNAL SQLSTATE '45000';
+				SELECT 'Cannot remove Airbnb with processing status' AS result;
+			END IF;
+		ELSE
+			SELECT 'Airbnb not found' AS result;
+		END IF;
+	END $$
+
 DELIMITER ;
 
-
+CALL remove_unavailable(1004, '2023-04-25');
 
 -- Edite price
 /*

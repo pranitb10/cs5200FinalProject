@@ -205,7 +205,7 @@ def host_menu(host_email):
         menu_options = input("Home Screen Menu. \n\n Please enter any of the below given options (any number)" + 
         " to perform an action as a host. \n1) Display all your owned Airbnbs. \n2) Post a new Airbnb. \n3) Mark an Airbnb unavailable." + 
         " \n4) Edit price for an Airbnb. \n5) Show all orders. \n6) Show all 'wait-to-confirmed' orders. \n7) Confirm an order." + 
-        " \n8) Reject an order. \n9) To complete an order. \n10) Edit your Host profile. \n11) Give Profile Details. \n12) Logout. \n\n") 
+        " \n8) Reject an order. \n9) To complete an order. \n10 To remove an unavailable airbnb. \n11) Edit your Host profile. \n12) Give Profile Details. \n13) Logout. \n\n") 
 
         if menu_options == '1':
             query = "CALL display_airbnb(%s)"
@@ -282,7 +282,7 @@ def host_menu(host_email):
 
             a_edited_cleaning = input("\n\nPlease enter the updated cleaning fee for this Airbnb: \n")
 
-            unavailable_query = "CALL add_unavailable(%s, %s, %s)"
+            unavailable_query = "CALL edite_price(%s, %s, %s)"
             unavailable_args = cursor.execute(unavailable_query, (a_house_id, a_edited_price, a_edited_cleaning))
             connection.commit()
             print("\n\nYou have successfully changed the price for the Airbnb ", a_house_id, " to ", a_edited_price, 

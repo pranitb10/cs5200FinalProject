@@ -9,17 +9,19 @@ user can update this information in edite_tenate
 */
 
 DROP PROCEDURE IF EXISTS create_tenant;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE create_tenant(
-	name_p  VARCHAR(20),
-	email_p VARCHAR(50),
-	phone_p VARCHAR(20)
+    IN p_name VARCHAR(20),
+    IN p_email VARCHAR(50),
+    IN p_phone VARCHAR(20),
+    IN p_gender ENUM("Male", "Female", "Others", "Not to tell"),
+    IN p_language_code CHAR(2)
 )
 BEGIN
-	INSERT tenants ( `name`, email, phone)
-    values (name_p, email_p, phone_p);
-
-	END $$
+    -- Insert the new tenant into the tenants table
+    INSERT INTO tenants (name, email, phone, gender, language_code)
+    VALUES (p_name, p_email, p_phone, p_gender, p_language_code);
+END //
 	DELIMITER  ;
 
 
@@ -33,28 +35,17 @@ check whether the language_p is in the languages schema before insert
 DROP PROCEDURE IF EXISTS edit_tenant;
 
 DELIMITER $$
-CREATE PROCEDURE edit_tenant (
-	email_p VARCHAR(50),
-	gender_p VARCHAR(50),
-    language_p VARCHAR(50)
+CREATE PROCEDURE edit_tenant(
+    IN p_email VARCHAR(50),
+    IN p_gender ENUM('Male', 'Female', 'Others', 'Not to tell'),
+    IN p_language CHAR(2)
 )
 BEGIN
-	DECLARE language_code_p CHAR(2);
-    IF language_p IS NOT NULL THEN
-		-- If the insert language name is NOT NULL, check it is valid language name
-		SELECT `code` INTO language_code_p FROM languages WHERE `name` = language_p;
-		IF language_code_p IS NULL THEN
-			SELECT "there is no such language option";
-		ELSE
-			UPDATE tenants SET language_code = language_code_p WHERE email = email_p;
-		END IF;
-	ELSE
-     -- If the insert language name is NULL, set the tenenate language as NULL
-		UPDATE tenants SET language_code = NULL WHERE email = email_p;
-	END IF;
+    UPDATE tenants
+    SET gender = p_gender, language_code = p_language
+    WHERE email = p_email;
+END $$
 
-    UPDATE tenants SET gender = gender_p WHERE email = email_p;
-END$$
 DELIMITER ;
 
 
@@ -66,20 +57,23 @@ phomne can be NULL
 gender as default "not to tell", language as NULL,
 host can update this information in edite_tenate
 */
-
 DROP PROCEDURE IF EXISTS create_host;
-DELIMITER $$
+DELIMITER //
+
 CREATE PROCEDURE create_host(
-	name_p  VARCHAR(20),
-	email_p VARCHAR(50),
-	phone_p VARCHAR(20)
+    IN p_host_name VARCHAR(150),
+    IN p_email VARCHAR(50),
+    IN p_phone VARCHAR(20),
+    IN p_gender ENUM("Male", "Female", "Others", "Not to tell"),
+    IN p_language_code CHAR(2)
 )
 BEGIN
-	INSERT `hosts` ( host_name, email, phone)
-    values (name_p, email_p, phone_p);
+    -- Insert the new host into the hosts table
+    INSERT INTO hosts (host_name, email, phone, gender, language_code)
+    VALUES (p_host_name, p_email, p_phone, p_gender, p_language_code);
+END //
 
-	END $$
-	DELIMITER  ;
+DELIMITER ;
 
 
 -- setting the account
@@ -92,28 +86,14 @@ DROP PROCEDURE IF EXISTS edit_host;
 
 DELIMITER $$
 CREATE PROCEDURE edit_host(
-	email_p VARCHAR(50),
-	gender_p VARCHAR(50),
-    language_p VARCHAR(50)
+	IN p_email VARCHAR(50),
+    IN p_gender ENUM('Male', 'Female', 'Others', 'Not to tell'),
+    IN p_language CHAR(2)
 )
 BEGIN
-	DECLARE language_code_p CHAR(2);
-    IF language_p IS NOT NULL THEN
-		-- If the insert language name is NOT NULL, check it is valid language name
-		SELECT `code` INTO language_code_p FROM languages WHERE `name` = language_p;
-		IF language_code_p IS NULL THEN
-			SELECT ERROR_PROCEDURE() AS ErrorProcedure;
+	UPDATE hosts SET gender = p_gender, language_code = p_language WHERE email = p_email;
+END $$
 
-		ELSE
-			UPDATE hosts SET language_code = language_code_p WHERE email = email_p;
-		END IF;
-	ELSE
-     -- If the insert language name is NULL, set the tenenate language as NULL
-		UPDATE hosts SET language_code = NULL WHERE email = email_p;
-	END IF;
-
-    UPDATE hosts SET gender = gender_p WHERE email = email_p;
-END$$
 DELIMITER ;
 
 
@@ -197,8 +177,8 @@ BEGIN
 	DECLARE new_house_id, city_p INT;
     SELECT MAX(house_id) into new_house_id FROM airbnbs;
     SET new_house_id = new_house_id +1;
-    INSERT INTO airbnbs(house_id, `host`, title, city_id, address, num_of_rooms,
-						num_of_beds, num_parking, `description`, current_price, current_cleaning_fee)
+    INSERT INTO airbnbs(house_id, host, title, city_id, address, num_of_rooms,
+						num_of_beds, num_parking, description, current_price, current_cleaning_fee)
 	VALUES(new_house_id, host_p, title_p, city_id_p, address_p, num_of_rooms_p, num_of_beds_p,
 			num_parking_p, description_p, current_price_p, current_cleaning_fee_p);
 	return new_house_id;
@@ -230,33 +210,55 @@ DELIMITER $$
 DELIMITER ;
 
 
+
 -- remove the airbnb a priod of time when the airbnb is unvailable
 /*
 Because every unvaileble for each airbnb has unique start date and end date,
 so we only need one of the dates to filter.
 remove_unavailable(house_id_p, start_date_p)
 */
+
 DROP PROCEDURE IF EXISTS remove_unavailable;
 
-DELIMITER $$
+DELIMITER //
 	CREATE PROCEDURE remove_unavailable(
-		house_id_p int,
-		start_date_p DATE
+		IN p_house_id INT,
+		IN p_start_date DATE
 	)
 	BEGIN
-    declare state VARCHAR(50);
-	SELECT states into state FROM airbnb_unavailable AS U
-    LEFT JOIN orders AS O using(house_id)
-    WHERE  house_id = house_id_p
-    AND start_date = start_date_p;
-    IF state != "processing" THEN
-		DELETE FROM airbnb_unavailable
-		WHERE house_id = house_id_p AND start_date = start_date_p;
-	END IF;
-    END $$
+		DECLARE airbnb_count INT DEFAULT 0;
+		DECLARE state VARCHAR(50);
+	  
+		-- Check if the given airbnb is present in the table
+		SELECT DISTINCT COUNT(*) INTO airbnb_count FROM airbnb_unavailable 
+		WHERE house_id = p_house_id 
+		AND start_date = p_start_date LIMIT 1;
+	  
+		-- If the airbnb exists, get its status
+		IF airbnb_count > 0 THEN
+			SELECT DISTINCT states into state FROM airbnb_unavailable
+			LEFT JOIN orders AS O using(house_id)
+			WHERE house_id = p_house_id 
+			AND start_date = p_start_date LIMIT 1;
+			
+			-- If the airbnb status is not processing, delete it from the table
+			IF state <> 'processing' THEN
+				DELETE FROM airbnb_unavailable 
+				WHERE house_id = p_house_id 
+				AND start_date = p_start_date;
+				SELECT 'Airbnb removed successfully' AS result;
+			ELSE
+				SIGNAL SQLSTATE '45000';
+				SELECT 'Cannot remove Airbnb with processing status' AS result;
+			END IF;
+		ELSE
+			SELECT 'Airbnb not found' AS result;
+		END IF;
+	END $$
+
 DELIMITER ;
 
-
+CALL remove_unavailable(1004, '2023-04-25');
 
 -- Edite price
 /*
@@ -322,4 +324,22 @@ DELIMITER $$
     AND house_id = house_id_p
     AND end_date >= CURDATE();
     END $$
+DELIMITER ;
+
+
+/*
+A procedure to return the name of the host based on the email provided.
+*/
+DELIMITER $$
+
+CREATE PROCEDURE get_host_name(
+    IN p_email VARCHAR(50)
+)
+BEGIN
+    -- Select the host's name from the hosts table
+    SELECT host_name
+    FROM hosts
+    WHERE email = p_email;
+END $$
+
 DELIMITER ;

@@ -2,28 +2,61 @@ USE airbnb;
 
 
 /*
-A procedure to search for hosts during login.
+A procedure to return host profile details.
 */
-DROP PROCEDURE IF EXISTS `login_host`;
-DELIMITER //
-
-CREATE PROCEDURE login_host(
-    IN p_email VARCHAR(50),
-    OUT p_result VARCHAR(150)
+DROP PROCEDURE IF EXISTS `get_host_details`;
+DELIMITER $$
+CREATE PROCEDURE get_host_details(
+    IN p_email VARCHAR(50)
 )
 BEGIN
-    DECLARE v_name VARCHAR(150);
-    
-    -- Check if the email and phone match a record in the hosts table
-    SELECT host_name INTO v_name
-    FROM hosts
+    SELECT * FROM hosts
+    WHERE email = p_email;
+END $$
+
+DELIMITER ;
+
+
+
+/*
+A procedure to return tenant profile details.
+*/
+DROP PROCEDURE IF EXISTS `get_tenant_details`;
+DELIMITER $$
+
+CREATE PROCEDURE get_tenant_details(
+    IN p_email VARCHAR(50)
+)
+BEGIN
+    SELECT * FROM tenants
     WHERE email = p_email;
     
-    -- If a matching record is found, log the host in
-    IF v_name IS NOT NULL THEN
-        SET p_result = 1;
+END $$
+
+DELIMITER ;
+
+call get_tenant_details("random1@gmail.com");
+
+
+/*
+A procedure to search for hosts during login.
+*/
+DELIMITER //
+
+CREATE FUNCTION login_host(p_email VARCHAR(50)) 
+RETURNS INT 
+DETERMINISTIC READS SQL DATA
+BEGIN 
+    DECLARE email_count INT DEFAULT 0;
+  
+    -- Check if the host email exists in the database
+    SELECT COUNT(*) INTO email_count FROM hosts WHERE email = p_email;
+  
+    -- If the host email exists, log them in and return 1 as the response
+    IF email_count > 0 THEN
+        RETURN 1;
     ELSE
-        SET p_result = 0;
+        RETURN 0;
     END IF;
 END //
 
@@ -44,26 +77,22 @@ SELECT @result; -- Expected output: "Invalid login credentials."
 /*
 A procedure to search for tenants during login.
 */
-DROP PROCEDURE IF EXISTS `login_tenant`;
 DELIMITER //
 
-CREATE PROCEDURE login_tenant(
-    IN p_email VARCHAR(50),
-    OUT p_result VARCHAR(150)
-)
-BEGIN
-    DECLARE v_name VARCHAR(20);
-    
-    -- Check if the email matches a record in the tenants table
-    SELECT name INTO v_name
-    FROM tenants
-    WHERE email = p_email;
-    
-    -- If a matching record is found, log the tenant in
-    IF v_name IS NOT NULL THEN
-        SET p_result = 1;
+CREATE FUNCTION login_tenant(p_email VARCHAR(50)) 
+RETURNS INT 
+DETERMINISTIC READS SQL DATA
+BEGIN 
+    DECLARE email_count INT DEFAULT 0;
+  
+    -- Check if the host email exists in the database
+    SELECT COUNT(*) INTO email_count FROM tenants WHERE email = p_email;
+  
+    -- If the host email exists, log them in and return 1 as the response
+    IF email_count > 0 THEN
+        RETURN 1;
     ELSE
-        SET p_result = 0;
+        RETURN 0;
     END IF;
 END //
 
@@ -114,17 +143,31 @@ the period of start_date and end_date.
 DROP PROCEDURE IF EXISTS `confirm_order`;
 DELIMITER //
 
-CREATE PROCEDURE `confirm_order` (IN `in_order_num` VARCHAR(10), IN `in_start_date` DATE, IN `in_end_date` DATE)
+CREATE PROCEDURE confirm_order(
+    IN p_order_num VARCHAR(10)
+)
 BEGIN
-    UPDATE orders SET states = 'processing' WHERE order_num = in_order_num;
-    INSERT INTO airbnb_unavailable (house_id, start_date, end_date) 
-    SELECT house_id, in_start_date, in_end_date FROM orders WHERE order_num = in_order_num;
+    -- Get the order details from the orders table
+    SELECT *
+    INTO @order_numm, @order_tenant, @order_house_id, @order_start_date, @order_end_date, @order_price_per_day, @order_cleaning_fee, @states, @rate
+    FROM orders
+    WHERE order_num = p_order_num;
+
+    -- Set the status of the order to 'confirmed'
+    UPDATE orders
+    SET states = 'processing'
+    WHERE order_num = p_order_num;
+
+    -- Add the corresponding airbnb to the airbnb_unavailable table for the period of the order
+    INSERT INTO airbnb_unavailable(house_id, start_date, end_date)
+    VALUES(@order_house_id, @order_start_date, @order_end_date);
 END //
+
 
 DELIMITER ;
 
 -- Test the procedure:
-CALL `confirm_order`('1234567890', '2023-05-01', '2023-05-05');
+CALL `confirm_order`('ORD0013');
 
 
 
@@ -216,13 +259,15 @@ A procedure to ask the tenant to enter a country and look it up in the database 
 DROP PROCEDURE IF EXISTS `check_country`;
 DELIMITER //
 
-CREATE PROCEDURE `check_country` (IN `in_country` VARCHAR(225), OUT `out_response` VARCHAR(225))
+CREATE PROCEDURE `check_country` (IN `in_country` VARCHAR(225))
 BEGIN
+	DECLARE out_response INT;
     IF EXISTS(SELECT 1 FROM world_cities WHERE country = in_country) THEN
         SET out_response = 1;
     ELSE
         SET out_response = 0;
     END IF;
+    SELECT out_response;
 END //
 
 DELIMITER ;
@@ -240,13 +285,15 @@ A procedure to ask the tenant to enter a city and look it up in the database if 
 DROP PROCEDURE IF EXISTS `check_city`;
 DELIMITER //
 
-CREATE PROCEDURE `check_city` (IN `in_city` VARCHAR(225), OUT `out_response` VARCHAR(225))
+CREATE PROCEDURE `check_city` (IN `in_city` VARCHAR(225))
 BEGIN
+	DECLARE out_response INT;
     IF EXISTS(SELECT 1 FROM world_cities WHERE city = in_city) THEN
         SET out_response = 1;
     ELSE
         SET out_response = 0;
     END IF;
+    SELECT out_response;
 END //
 
 DELIMITER ;
@@ -271,7 +318,7 @@ CREATE PROCEDURE `search_airbnbs` (
     IN `in_end_date` DATE
 )
 BEGIN
-    SELECT a.title, a.address, a.current_price
+    SELECT a.house_id, a.host, a.title, a.address, a.num_of_rooms, a.num_of_beds, a.average_rating, a.current_price
     FROM airbnbs a
     INNER JOIN world_cities wc ON a.city_id = wc.city_id
     WHERE wc.country = in_country AND wc.city = in_city
@@ -303,15 +350,17 @@ CREATE PROCEDURE `create_order` (
     IN `in_tenant_email` VARCHAR(50),
     IN `in_house_id` INT,
     IN `in_start_date` DATE,
-    IN `in_end_date` DATE,
-    OUT `out_order_num` VARCHAR(10)
+    IN `in_end_date` DATE
 )
 BEGIN
     DECLARE order_count INT;
+    DECLARE out_order_num VARCHAR(10);
     SELECT COUNT(*) INTO order_count FROM orders;
     SET out_order_num = CONCAT('ORD', LPAD(order_count + 1, 4, '0'));
     INSERT INTO orders (order_num, tenant, house_id, check_in_date, check_out_date, price_per_day, cleaning_fee, states)
-    VALUES (out_order_num, in_tenant_email, in_house_id, in_start_date, in_end_date, in_price_per_day, in_cleaning_fee, 'wait to comfired');
+    VALUES (out_order_num, in_tenant_email, in_house_id, in_start_date, in_end_date, (select current_price from airbnbs where house_id = in_house_id) ,
+    (select current_cleaning_fee from airbnbs where house_id = in_house_id), 'wait to confirmed');
+    SELECT out_order_num;
 END //
 
 DELIMITER ;
@@ -354,11 +403,11 @@ DROP PROCEDURE IF EXISTS `validate_start_date`;
 DELIMITER //
 
 CREATE PROCEDURE validate_start_date(
-	IN input_date VARCHAR(10),
-	OUT p_result VARCHAR(150)
+	IN input_date VARCHAR(10)
 )
 BEGIN
   DECLARE valid_date DATE;
+  DECLARE p_result INT;
   SET valid_date = STR_TO_DATE(input_date, '%Y-%m-%d');
 
   IF valid_date IS NULL THEN
@@ -368,6 +417,7 @@ BEGIN
   ELSE
     SET p_result = 1;
   END IF;
+  SELECT p_result;
 END //
 
 DELIMITER ;
@@ -377,15 +427,15 @@ DELIMITER ;
 /*
 A procedure to take end_date from a tenant as an input.
 */
-DROP PROCEDURE IF EXISTS `validate_end_dat`;
+DROP PROCEDURE IF EXISTS `validate_end_date`;
 DELIMITER //
 
 CREATE PROCEDURE validate_end_date(
-	IN input_date VARCHAR(10),
-	OUT p_result VARCHAR(150)
+	IN input_date VARCHAR(10)
 )
 BEGIN
   DECLARE valid_date DATE;
+  DECLARE p_result INT;
   SET valid_date = STR_TO_DATE(input_date, '%Y-%m-%d');
 
   IF valid_date IS NULL THEN
@@ -395,6 +445,7 @@ BEGIN
   ELSE
     SET p_result = 1;
   END IF;
+  SELECT p_result;
 END //
 
 DELIMITER ;
@@ -414,5 +465,103 @@ BEGIN
   JOIN world_cities c ON h.city_id = c.city_id
   WHERE o.tenant = tenant_email;
 END //
+
+DELIMITER ;
+
+
+
+/*
+A procedure to display all the wait to confirmed orders for a host.
+*/
+DELIMITER $$
+
+CREATE PROCEDURE show_wait_to_confirmed_orders(
+    IN p_host_email VARCHAR(50)
+)
+BEGIN
+    -- Select all orders for the host with status 'wait to confirmed'
+    SELECT *
+    FROM orders
+    WHERE house_id IN (
+        SELECT house_id
+        FROM airbnbs
+        WHERE host = p_host_email
+    )
+    AND states = 'wait to confirmed';
+END $$
+
+DELIMITER ;
+
+
+
+/*
+A procedure to return all the languages.
+*/
+DELIMITER $$
+
+CREATE PROCEDURE get_languages()
+BEGIN
+	SELECT * FROM languages;
+END $$
+
+DELIMITER ;
+
+
+
+/*
+A procedure to update the status of an order to completed by a host.
+*/
+DELIMITER //
+
+CREATE PROCEDURE update_order_status_completed(
+  IN p_order_num VARCHAR(10)
+)
+BEGIN
+  UPDATE orders
+  SET states = 'completed'
+  WHERE order_num = p_order_num;
+END //
+
+
+DELIMITER ;
+
+
+
+/*
+A procedure to show a list of orders that are confirmed and processing.
+*/
+DELIMITER //
+
+CREATE PROCEDURE show_processing_orders(
+    IN p_host_email VARCHAR(50)
+)
+BEGIN
+    SELECT orders.order_num, tenants.name as tenant_name, airbnbs.title as airbnb_title, 
+           orders.check_in_date, orders.check_out_date, orders.price_per_day, orders.cleaning_fee
+    FROM orders
+    INNER JOIN tenants ON orders.tenant = tenants.email
+    INNER JOIN airbnbs ON orders.house_id = airbnbs.house_id
+    WHERE orders.states = 'processing' AND airbnbs.host = p_host_email;
+END //
+
+DELIMITER ;
+
+
+
+/*
+A procedure to show all the airbnbs in the airbnb_unavailable table."
+*/
+DROP PROCEDURE IF EXISTS `show_unavailable_airbnbs_for_host`;
+DELIMITER //
+
+CREATE PROCEDURE show_unavailable_airbnbs_for_host(IN p_email VARCHAR(50))
+BEGIN
+    SELECT ua.house_id, ua.start_date, ua.end_date
+    FROM airbnb_unavailable ua
+    JOIN airbnbs a ON ua.house_id = a.house_id
+    JOIN hosts h ON a.host = h.email
+    WHERE h.email = p_email;
+END //
+
 
 DELIMITER ;

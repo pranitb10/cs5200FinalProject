@@ -149,7 +149,7 @@ CREATE PROCEDURE confirm_order(
 BEGIN
     -- Get the order details from the orders table
     SELECT *
-    INTO @order_tenant, @order_house_id, @order_start_date, @order_end_date, @order_price_per_day, @order_cleaning_fee
+    INTO @order_numm, @order_tenant, @order_house_id, @order_start_date, @order_end_date, @order_price_per_day, @order_cleaning_fee, @states, @rate
     FROM orders
     WHERE order_num = p_order_num;
 
@@ -167,7 +167,7 @@ END //
 DELIMITER ;
 
 -- Test the procedure:
-CALL `confirm_order`('1234567890', '2023-05-01', '2023-05-05');
+CALL `confirm_order`('ORD0013');
 
 
 
@@ -350,15 +350,16 @@ CREATE PROCEDURE `create_order` (
     IN `in_tenant_email` VARCHAR(50),
     IN `in_house_id` INT,
     IN `in_start_date` DATE,
-    IN `in_end_date` DATE,
-    OUT `out_order_num` VARCHAR(10)
+    IN `in_end_date` DATE
 )
 BEGIN
     DECLARE order_count INT;
+    DECLARE out_order_num VARCHAR(10);
     SELECT COUNT(*) INTO order_count FROM orders;
     SET out_order_num = CONCAT('ORD', LPAD(order_count + 1, 4, '0'));
     INSERT INTO orders (order_num, tenant, house_id, check_in_date, check_out_date, price_per_day, cleaning_fee, states)
-    VALUES (out_order_num, in_tenant_email, in_house_id, in_start_date, in_end_date, in_price_per_day, in_cleaning_fee, 'wait to comfired');
+    VALUES (out_order_num, in_tenant_email, in_house_id, in_start_date, in_end_date, (select current_price from airbnbs where house_id = in_house_id) ,
+    (select current_cleaning_fee from airbnbs where house_id = in_house_id), 'wait to confirmed');
     SELECT out_order_num;
 END //
 
@@ -496,11 +497,51 @@ DELIMITER ;
 /*
 A procedure to return all the languages.
 */
-DELIMITER //
+DELIMITER $$
 
 CREATE PROCEDURE get_languages()
 BEGIN
 	SELECT * FROM languages;
+END $$
+
+DELIMITER ;
+
+
+
+/*
+A procedure to update the status of an order to completed by a host.
+*/
+DELIMITER //
+
+CREATE PROCEDURE update_order_status_completed(
+  IN p_order_num VARCHAR(10)
+)
+BEGIN
+  UPDATE orders
+  SET states = 'completed'
+  WHERE order_num = p_order_num;
+END //
+
+
+DELIMITER ;
+
+
+
+/*
+A procedure to show a list of orders that are confirmed and processing.
+*/
+DELIMITER //
+
+CREATE PROCEDURE show_processing_orders(
+    IN p_host_email VARCHAR(50)
+)
+BEGIN
+    SELECT orders.order_num, tenants.name as tenant_name, airbnbs.title as airbnb_title, 
+           orders.check_in_date, orders.check_out_date, orders.price_per_day, orders.cleaning_fee
+    FROM orders
+    INNER JOIN tenants ON orders.tenant = tenants.email
+    INNER JOIN airbnbs ON orders.house_id = airbnbs.house_id
+    WHERE orders.states = 'processing' AND airbnbs.host = p_host_email;
 END //
 
 DELIMITER ;

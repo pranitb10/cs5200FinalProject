@@ -218,6 +218,8 @@ remove_unavailable(house_id_p, start_date_p)
 */
 DROP PROCEDURE IF EXISTS remove_unavailable;
 
+DROP PROCEDURE IF EXISTS remove_unavailable;
+
 DELIMITER $$
 	CREATE PROCEDURE remove_unavailable(
 		house_id_p int,
@@ -229,13 +231,18 @@ DELIMITER $$
     LEFT JOIN orders AS O using(house_id)
     WHERE  house_id = house_id_p
     AND start_date = start_date_p;
-    IF state != "processing" THEN
+    
+    IF state = 'processing' THEN
+    -- Report error
+		SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'Invalid genre provided.';
+	ELSE
 		DELETE FROM airbnb_unavailable
 		WHERE house_id = house_id_p AND start_date = start_date_p;
+		
 	END IF;
     END $$
-DELIMITER ;
-
+DELIMITER 
 
 
 -- Edite price

@@ -241,3 +241,16 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2023-04-16 20:52:09
+
+
+
+UPDATE airbnbs SET city_id = 1036074917 WHERE house_id = 1001;
+UPDATE airbnbs SET city_id = 1036074917 WHERE house_id = 1002;
+UPDATE airbnbs SET city_id = 1156228865 WHERE house_id = 1003;
+UPDATE airbnbs SET city_id = 1356226629 WHERE house_id = 1004;
+UPDATE airbnbs SET city_id = 1156228865 WHERE house_id = 1005;
+UPDATE airbnbs SET city_id = 1840000455 WHERE house_id = 1006;
+UPDATE airbnbs SET city_id = 1840000455 WHERE house_id = 1007;
+UPDATE airbnbs SET city_id = 1840000455 WHERE house_id = 1008;
+UPDATE airbnbs SET city_id = 1840000455 WHERE house_id = 1009;
+UPDATE airbnbs SET city_id = 1840034016 WHERE house_id = 1010;

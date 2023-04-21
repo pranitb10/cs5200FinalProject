@@ -139,7 +139,7 @@ def tenant_menu(tenant_email):
                             showPandasDataFrame(attr, info)
                             
                             house_id = input("\nPlease enter a house id to book and create an order.\n\n")
-                            query2 = "CALL create_order(%s)"
+                            query2 = "CALL create_order(%s, %s, %s, %s)"
                             result_arg = cursor.execute(query2, (email, house_id, start_date, end_date,))
                             result = cursor.fetchall()[0]["out_order_num"]
                             print("You've successfully booked the Airbnb no. ", house_id, ". Your order number is: ", result)
@@ -205,7 +205,7 @@ def host_menu(host_email):
         menu_options = input("Home Screen Menu. \n\n Please enter any of the below given options (any number)" + 
         " to perform an action as a host. \n1) Display all your owned Airbnbs. \n2) Post a new Airbnb. \n3) Mark an Airbnb unavailable." + 
         " \n4) Edit price for an Airbnb. \n5) Show all orders. \n6) Show all 'wait-to-confirmed' orders. \n7) Confirm an order." + 
-        " \n8) Reject an order. \n9) Edit your Host profile. \n10) Give Profile Details. \n11) Logout. \n\n") 
+        " \n8) Reject an order. \n9) To complete an order. \n10) Edit your Host profile. \n11) Give Profile Details. \n12) Logout. \n\n") 
 
         if menu_options == '1':
             query = "CALL display_airbnb(%s)"
@@ -289,7 +289,7 @@ def host_menu(host_email):
             query = "CALL get_host_orders(%s)"
             result_args = cursor.execute(query, (email))
             all_host_orders = cursor.fetchall()
-            attr, info = readData(all_airbnbs)
+            attr, info = readData(all_host_orders)
             showPandasDataFrame(attr, info)
         
         elif menu_options == '6':
@@ -309,9 +309,9 @@ def host_menu(host_email):
             order_id = input("\n\nPlease enter the order ID that you want to confirm: \n")
 
             order_confirm_query = "CALL confirm_order(%s)"
-            order_confirm_arg = cursor.execute(order_confirm_query, (order_id))
+            order_confirm_arg = cursor.execute(order_confirm_query, (order_id, ))
             connection.commit()
-            print("\n\nYou have successfully confirmed order ID ", order_id)
+            print("\n\nYou have successfully confirmed order ", order_id)
 
         elif menu_options == '8':
             query = "CALL show_wait_to_confirmed_orders(%s)"
@@ -325,9 +325,21 @@ def host_menu(host_email):
             order_reject_query = "CALL reject_order(%s)"
             order_reject_arg = cursor.execute(order_reject_query, (order_id))
             connection.commit()
-            print("\n\nYou have successfully rejected order ID ", order_id)
+            print("\n\nYou have successfully rejected order ", order_id)
 
         elif menu_options == '9':
+            processing_orders_query = "CALL show_processing_orders(%s)"
+            processing_orders_args = cursor.execute(processing_orders_query, (email))
+            all_processing_orders = cursor.fetchall()
+            attr, info = readData(all_processing_orders)
+
+            order_input = input("\n\nPlease enter the order ID that is to be updated to completed: \n")
+            completed_query = "CALL update_order_status_completed(%s)"
+            completed_args = cursor.execute(completed_query, (order_input))
+            connection.commit()
+            print("\n\nYou have successfully completed the order ", order_id)
+
+        elif menu_options == '10':
             print("\nYou've decided to edit your profile. \n. Here you can edit your gender and language.\n")
             edit_gender = input("\nPlease enter the gender you want to change to. \nYou can choose from Male, Female, Others or Not to tell.\n")
 
@@ -341,14 +353,15 @@ def host_menu(host_email):
 
             print("\nYou have successfully changed your gender to ", edit_gender, " and your language of preferrence to ", edit_language)
 
-        elif menu_options == '10':
+        elif menu_options == '11':
             query = "CALL get_host_details(%s)"
-            result_args = cursor.execute(query, (email))
+            result_args = cursor.execute(query, (email,))
             profile_details = cursor.fetchall()
+            print(profile_details)
             attr, info = readData(profile_details)
             showPandasDataFrame(attr, info)
 
-        elif menu_options == '11':
+        elif menu_options == '12':
             print("\n\nYou've been logged out. Thank you!\n")
             loop = False
         else:

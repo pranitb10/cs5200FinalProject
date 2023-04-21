@@ -35,28 +35,17 @@ check whether the language_p is in the languages schema before insert
 DROP PROCEDURE IF EXISTS edit_tenant;
 
 DELIMITER $$
-CREATE PROCEDURE edit_tenant (
-	email_p VARCHAR(50),
-	gender_p VARCHAR(50),
-    language_p VARCHAR(50)
+CREATE PROCEDURE edit_tenant(
+    IN p_email VARCHAR(50),
+    IN p_gender ENUM('Male', 'Female', 'Others', 'Not to tell'),
+    IN p_language CHAR(2)
 )
 BEGIN
-	DECLARE language_code_p CHAR(2);
-    IF language_p IS NOT NULL THEN
-		-- If the insert language name is NOT NULL, check it is valid language name
-		SELECT `code` INTO language_code_p FROM languages WHERE `name` = language_p;
-		IF language_code_p IS NULL THEN
-			SELECT "there is no such language option";
-		ELSE
-			UPDATE tenants SET language_code = language_code_p WHERE email = email_p;
-		END IF;
-	ELSE
-     -- If the insert language name is NULL, set the tenenate language as NULL
-		UPDATE tenants SET language_code = NULL WHERE email = email_p;
-	END IF;
+    UPDATE tenants
+    SET gender = p_gender, language_code = p_language
+    WHERE email = p_email;
+END $$
 
-    UPDATE tenants SET gender = gender_p WHERE email = email_p;
-END$$
 DELIMITER ;
 
 
@@ -97,28 +86,14 @@ DROP PROCEDURE IF EXISTS edit_host;
 
 DELIMITER $$
 CREATE PROCEDURE edit_host(
-	email_p VARCHAR(50),
-	gender_p VARCHAR(50),
-    language_p VARCHAR(50)
+	IN p_email VARCHAR(50),
+    IN p_gender ENUM('Male', 'Female', 'Others', 'Not to tell'),
+    IN p_language CHAR(2)
 )
 BEGIN
-	DECLARE language_code_p CHAR(2);
-    IF language_p IS NOT NULL THEN
-		-- If the insert language name is NOT NULL, check it is valid language name
-		SELECT `code` INTO language_code_p FROM languages WHERE `name` = language_p;
-		IF language_code_p IS NULL THEN
-			SELECT ERROR_PROCEDURE() AS ErrorProcedure;
+	UPDATE hosts SET gender = p_gender, language_code = p_language WHERE email = p_email;
+END $$
 
-		ELSE
-			UPDATE hosts SET language_code = language_code_p WHERE email = email_p;
-		END IF;
-	ELSE
-     -- If the insert language name is NULL, set the tenenate language as NULL
-		UPDATE hosts SET language_code = NULL WHERE email = email_p;
-	END IF;
-
-    UPDATE hosts SET gender = gender_p WHERE email = email_p;
-END$$
 DELIMITER ;
 
 

@@ -165,7 +165,7 @@ def tenant_menu(tenant_email):
             
             order_no = input("\n\nPlease enter the order number you want to rate based on your living experience at the Airbnb. \n")
             rating = input("Please enter your rating on a scale of 0-5 for the selected Airbnb. \n")
-            query2 = "CALL rate_order_and_update_airbn(%s, %d)"
+            query2 = "CALL rate_order_and_update_airbnb(%s, %s)"
             result_arg = cursor.execute(query2, (order_no, rating))
             print("\n\nYou've successfully rated a ", rating, " to an Airbnb having order number ", order_no, "\n\n")
 
@@ -185,7 +185,7 @@ def tenant_menu(tenant_email):
 
         elif menu_options == '5':
             query = "CALL get_tenant_details(%s)"
-            result_args = cursor.execute(query, (email))
+            result_args = cursor.execute(query, (email,))
             profile_details = cursor.fetchall()
             attr, info = readData(profile_details)
             showPandasDataFrame(attr, info)
@@ -217,7 +217,7 @@ def host_menu(host_email):
         elif menu_options == '2':
             host_name_query = "CALL get_host_name(%s)"
             host_name_arg = cursor.execute(host_name_query, (email))
-            host_name = cursor.fetchall()[0][host_name_arg]
+            host_name = cursor.fetchall()[0]['host_name']
 
             a_title = input("\n\nPlease enter a title for the new airbnb: \n")
 
@@ -225,6 +225,9 @@ def host_menu(host_email):
 
             get_city_query = "CALL display_cities(%s)"
             city_args = cursor.execute(get_city_query, (a_country))
+            all_cities = cursor.fetchall()
+            attr, info = readData(all_cities)
+            showPandasDataFrame(attr, info)
 
             a_city = input("\n\nPlease enter the ID of the city from the above list where you want to create your new Airbnb: \n")
 
@@ -242,8 +245,8 @@ def host_menu(host_email):
 
             a_cleaning_fee = input("\n\nPlease enter the cleaning fee for your new Airbnb: \n")
 
-            query = "SELECT create_airbnb(%s, %s, %d, %s, %d, %d, %d, %s, %f, %f) AS new_airbnb"
-            result_args = cursor.execute(query, (host_name, a_title, a_city, a_address, a_rooms, a_beds, a_parking, 
+            query = "SELECT create_airbnb(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) AS new_airbnb"
+            result_args = cursor.execute(query, (email, a_title, a_city, a_address, a_rooms, a_beds, a_parking, 
             a_description, a_price, a_cleaning_fee ))
             connection.commit()
             print("\n\nYou've successfully created the new Airbnb named ", a_title)
@@ -261,7 +264,7 @@ def host_menu(host_email):
 
             a_end_date = input("\n\nPlease enter the end date until when the Airbnb is unavailable: \n")
 
-            unavailable_query = "CALL add_unavailable(%d, %s, %s)"
+            unavailable_query = "CALL add_unavailable(%s, %s, %s)"
             unavailable_args = cursor.execute(unavailable_query, (a_house_id, a_start_date, a_end_date))
             connection.commit()
             print("\n\nYou have successfully marked the Airbnb ", a_house_id, " unavailable from ", a_start_date, " to ", a_end_date)
@@ -279,7 +282,7 @@ def host_menu(host_email):
 
             a_edited_cleaning = input("\n\nPlease enter the updated cleaning fee for this Airbnb: \n")
 
-            unavailable_query = "CALL add_unavailable(%d, %f, %f)"
+            unavailable_query = "CALL add_unavailable(%s, %s, %s)"
             unavailable_args = cursor.execute(unavailable_query, (a_house_id, a_edited_price, a_edited_cleaning))
             connection.commit()
             print("\n\nYou have successfully changed the price for the Airbnb ", a_house_id, " to ", a_edited_price, 
@@ -355,7 +358,7 @@ def host_menu(host_email):
 
         elif menu_options == '11':
             query = "CALL get_host_details(%s)"
-            result_args = cursor.execute(query, (email,))
+            result_args = cursor.execute(query, (email))
             profile_details = cursor.fetchall()
             print(profile_details)
             attr, info = readData(profile_details)

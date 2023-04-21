@@ -177,8 +177,8 @@ BEGIN
 	DECLARE new_house_id, city_p INT;
     SELECT MAX(house_id) into new_house_id FROM airbnbs;
     SET new_house_id = new_house_id +1;
-    INSERT INTO airbnbs(house_id, `host`, title, city_id, address, num_of_rooms,
-						num_of_beds, num_parking, `description`, current_price, current_cleaning_fee)
+    INSERT INTO airbnbs(house_id, host, title, city_id, address, num_of_rooms,
+						num_of_beds, num_parking, description, current_price, current_cleaning_fee)
 	VALUES(new_house_id, host_p, title_p, city_id_p, address_p, num_of_rooms_p, num_of_beds_p,
 			num_parking_p, description_p, current_price_p, current_cleaning_fee_p);
 	return new_house_id;
@@ -311,13 +311,11 @@ A procedure to return the name of the host based on the email provided.
 DELIMITER $$
 
 CREATE PROCEDURE get_host_name(
-    IN p_email VARCHAR(50),
-    OUT p_name VARCHAR(150)
+    IN p_email VARCHAR(50)
 )
 BEGIN
     -- Select the host's name from the hosts table
     SELECT host_name
-    INTO p_name
     FROM hosts
     WHERE email = p_email;
 END $$

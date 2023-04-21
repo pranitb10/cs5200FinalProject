@@ -52,7 +52,7 @@ DROP TABLE IF EXISTS `airbnbs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `airbnbs` (
   `house_id` int NOT NULL,
-  `host` varchar(50) DEFAULT NULL,
+  `host` varchar(150) DEFAULT NULL,
   `title` varchar(100) NOT NULL,
   `city_id` int DEFAULT NULL,
   `address` varchar(100) DEFAULT NULL,
@@ -91,7 +91,7 @@ DROP TABLE IF EXISTS `hosts`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hosts` (
   `host_name` varchar(150) NOT NULL,
-  `email` varchar(50) NOT NULL,
+  `email` varchar(150) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `gender` enum('Male','Female','Others','Not to tell') DEFAULT 'Not to tell',
   `language_code` char(2) DEFAULT NULL,
@@ -145,7 +145,7 @@ DROP TABLE IF EXISTS `orders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
   `order_num` varchar(10) NOT NULL,
-  `tenant` varchar(50) NOT NULL,
+  `tenant` varchar(150) NOT NULL,
   `house_id` int NOT NULL,
   `check_in_date` date NOT NULL,
   `check_out_date` date NOT NULL,
@@ -181,7 +181,7 @@ DROP TABLE IF EXISTS `tenants`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tenants` (
   `name` varchar(20) NOT NULL,
-  `email` varchar(50) NOT NULL,
+  `email` varchar(150) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `gender` enum('Male','Female','Others','Not to tell') DEFAULT 'Not to tell',
   `language_code` char(2) DEFAULT NULL,

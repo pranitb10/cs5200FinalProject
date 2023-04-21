@@ -216,7 +216,6 @@ Because every unvaileble for each airbnb has unique start date and end date,
 so we only need one of the dates to filter.
 remove_unavailable(house_id_p, start_date_p)
 */
-DROP PROCEDURE IF EXISTS remove_unavailable;
 
 DROP PROCEDURE IF EXISTS remove_unavailable;
 

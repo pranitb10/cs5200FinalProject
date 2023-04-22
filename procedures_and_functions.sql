@@ -8,7 +8,7 @@ DROP PROCEDURE IF EXISTS `get_host_details`;
 DELIMITER $$
 
 CREATE PROCEDURE get_host_details(
-    IN p_email VARCHAR(50)
+    IN p_email VARCHAR(150)
 )
 BEGIN
     SELECT * FROM hosts
@@ -26,7 +26,7 @@ DROP PROCEDURE IF EXISTS `get_tenant_details`;
 DELIMITER $$
 
 CREATE PROCEDURE get_tenant_details(
-    IN p_email VARCHAR(50)
+    IN p_email VARCHAR(150)
 )
 BEGIN
     SELECT * FROM tenants
@@ -249,9 +249,6 @@ BEGIN
 END //
 
 DELIMITER ;
-
--- Test the procedure:
-CALL `rate_order_and_update_airbnb`('1234567890', 4);
 
 
 /*

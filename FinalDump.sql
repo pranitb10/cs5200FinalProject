@@ -39,7 +39,7 @@ CREATE TABLE `airbnb_unavailable` (
 
 LOCK TABLES `airbnb_unavailable` WRITE;
 /*!40000 ALTER TABLE `airbnb_unavailable` DISABLE KEYS */;
-INSERT INTO `airbnb_unavailable` VALUES (1001,'2023-06-01','2023-06-07'),(1001,'2023-08-15','2023-08-20'),(1003,'2023-05-12','2023-05-18'),(1004,'2023-07-21','2023-07-24'),(1004,'2023-09-12','2023-09-15'),(1005,'2023-04-08','2023-04-10'),(1005,'2023-10-02','2023-10-08'),(1005,'2023-11-20','2023-11-25'),(1006,'2023-12-18','2023-12-24'),(1010,'2023-08-01','2023-08-06');
+INSERT INTO `airbnb_unavailable` VALUES (1001,'2023-06-01','2023-06-07'),(1001,'2023-08-15','2023-08-20'),(1003,'2023-05-12','2023-05-18'),(1004,'2023-09-12','2023-09-15'),(1005,'2023-04-08','2023-04-10'),(1005,'2023-10-02','2023-10-08'),(1005,'2023-11-20','2023-11-25'),(1006,'2023-12-18','2023-12-24'),(1010,'2023-08-01','2023-08-06'),(1011,'2023-04-21','2023-04-28');
 /*!40000 ALTER TABLE `airbnb_unavailable` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -78,7 +78,7 @@ CREATE TABLE `airbnbs` (
 
 LOCK TABLES `airbnbs` WRITE;
 /*!40000 ALTER TABLE `airbnbs` DISABLE KEYS */;
-INSERT INTO `airbnbs` VALUES (1001,'john.smith@gmail.com','Cozy Apartment in the Heart of the City',1036074917,'123 Main St.',2,1,1,2.20,10,'This charming apartment is located in the heart of the city and is perfect for a romantic getaway or a small family vacation.',80.00,10.00),(1002,'mary.johnson@yahoo.com','Spacious Loft with Stunning City Views',1036074917,'456 Elm St.',1,2,0,1.60,5,'Experience urban living at its finest in this spacious loft with breathtaking city views.',120.00,15.00),(1003,'david.lee@hotmail.com','Luxury Condo with Pool and Gym Access',1156228865,'789 Oak St.',3,3,2,3.00,15,'Treat yourself to the ultimate luxury experience in this beautiful condo with access to a pool and gym.',250.00,20.00),(1004,'anna.garcia@gmail.com','Coastal Cottage with Ocean Views',1356226629,'321 Beach Rd.',2,2,1,4.70,8,'Escape to the coast and enjoy breathtaking ocean views from this charming cottage.',150.00,15.00),(1005,'mohammed.ahmed@yahoo.com','Historic Home with Modern Amenities',1156228865,'987 Main St.',4,3,2,4.30,12,'Experience the best of both worlds in this beautifully restored historic home with all the modern amenities you need for a comfortable stay.',200.00,20.00),(1006,'lena.nguyen@gmail.com','Charming Bungalow in a Quiet Neighborhood',1840000455,'567 Maple St.',2,1,1,5.00,6,'This charming bungalow is the perfect place to relax and unwind in a quiet neighborhood.',100.00,10.00),(1007,'lena.nguyen@gmail.com','Stylish Studio Apartment in Downtown',1840000455,'246 Market St.',1,1,0,3.50,7,'Experience city living in style in this modern and chic studio apartment located in the heart of downtown.',90.00,10.00),(1008,'sara.kim@hotmail.com','Spacious Townhouse with Private Patio',1840000455,'789 Oak St.',3,3,1,3.20,10,'This spacious townhouse with a private patio is the perfect home away from home for your next family vacation.',180.00,20.00),(1009,'ahmed.hassan@gmail.com','Modern Apartment with Stunning Views',1840000455,'357 Hilltop Rd.',1,2,1,4.70,4,'Enjoy breathtaking views from this modern and stylish apartment located on a hilltop.',120.00,15.00),(1010,'jasmine.wong@yahoo.com','Beautifully Furnished Apartment in the City',1840034016,'123 Main St.',2,2,1,3.80,9,'This beautifully furnished apartment is located in the heart of the city and is perfect for a comfortable and convenient stay.',80.00,15.00);
+INSERT INTO `airbnbs` VALUES (1001,'john.smith@gmail.com','Cozy Apartment in the Heart of the City',1036074917,'123 Main St.',2,1,1,2.20,10,'This charming apartment is located in the heart of the city and is perfect for a romantic getaway or a small family vacation.',80.00,10.00),(1002,'mary.johnson@yahoo.com','Spacious Loft with Stunning City Views',1036074917,'456 Elm St.',1,2,0,1.60,5,'Experience urban living at its finest in this spacious loft with breathtaking city views.',120.00,15.00),(1003,'david.lee@hotmail.com','Luxury Condo with Pool and Gym Access',1156228865,'789 Oak St.',3,3,2,3.00,15,'Treat yourself to the ultimate luxury experience in this beautiful condo with access to a pool and gym.',250.00,20.00),(1004,'anna.garcia@gmail.com','Coastal Cottage with Ocean Views',1356226629,'321 Beach Rd.',2,2,1,4.70,8,'Escape to the coast and enjoy breathtaking ocean views from this charming cottage.',150.00,15.00),(1005,'mohammed.ahmed@yahoo.com','Historic Home with Modern Amenities',1156228865,'987 Main St.',4,3,2,4.30,12,'Experience the best of both worlds in this beautifully restored historic home with all the modern amenities you need for a comfortable stay.',200.00,20.00),(1006,'lena.nguyen@gmail.com','Charming Bungalow in a Quiet Neighborhood',1840000455,'567 Maple St.',2,1,1,5.00,6,'This charming bungalow is the perfect place to relax and unwind in a quiet neighborhood.',100.00,10.00),(1007,'lena.nguyen@gmail.com','Stylish Studio Apartment in Downtown',1840000455,'246 Market St.',1,1,0,3.50,7,'Experience city living in style in this modern and chic studio apartment located in the heart of downtown.',90.00,10.00),(1008,'sara.kim@hotmail.com','Spacious Townhouse with Private Patio',1840000455,'789 Oak St.',3,3,1,3.20,10,'This spacious townhouse with a private patio is the perfect home away from home for your next family vacation.',180.00,20.00),(1009,'ahmed.hassan@gmail.com','Modern Apartment with Stunning Views',1840000455,'357 Hilltop Rd.',1,2,1,4.79,6,'Enjoy breathtaking views from this modern and stylish apartment located on a hilltop.',120.00,15.00),(1010,'jasmine.wong@yahoo.com','Beautifully Furnished Apartment in the City',1840034016,'123 Main St.',2,2,1,3.80,9,'This beautifully furnished apartment is located in the heart of the city and is perfect for a comfortable and convenient stay.',80.00,15.00),(1011,'anna.garcia@gmail.com','Home Sweet Home',1840034016,'Manhattan',3,3,1,NULL,0,'Nice cozy Airbnb',300.00,30.00);
 /*!40000 ALTER TABLE `airbnbs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ CREATE TABLE `hosts` (
 
 LOCK TABLES `hosts` WRITE;
 /*!40000 ALTER TABLE `hosts` DISABLE KEYS */;
-INSERT INTO `hosts` VALUES ('Ahmed Hassan','ahmed.hassan@gmail.com','555-555-4567','Male','ar'),('Anna Garcia','anna.garcia@gmail.com','555-555-2345','Female','es'),('David Lee','david.lee@hotmail.com',NULL,'Male','ko'),('Jasmine Wong','jasmine.wong@yahoo.com','555-555-8901','Female','zh'),('Javier Hernandez','javier.hernandez@yahoo.com','555-555-3456','Male','es'),('John Smith','john.smith@gmail.com','555-555-1234','Male','en'),('Lena Nguyen','lena.nguyen@gmail.com',NULL,'Female','vi'),('Mary Johnson','mary.johnson@yahoo.com','555-555-5678','Female','en'),('Mohammed Ahmed','mohammed.ahmed@yahoo.com','555-555-6789','Male','ar'),('Sara Kim','sara.kim@hotmail.com','555-555-7890','Female','ko');
+INSERT INTO `hosts` VALUES ('Ahmed Hassan','ahmed.hassan@gmail.com','555-555-4567','Male','ar'),('Anna Garcia','anna.garcia@gmail.com','555-555-2345','Others','EN'),('David Lee','david.lee@hotmail.com',NULL,'Male','ko'),('Host1','host1@gmail.com','9999999999','Male','AF'),('Jasmine Wong','jasmine.wong@yahoo.com','555-555-8901','Female','zh'),('Javier Hernandez','javier.hernandez@yahoo.com','555-555-3456','Male','es'),('John Smith','john.smith@gmail.com','555-555-1234','Male','en'),('Lena Nguyen','lena.nguyen@gmail.com',NULL,'Female','vi'),('Mary Johnson','mary.johnson@yahoo.com','555-555-5678','Female','en'),('Mohammed Ahmed','mohammed.ahmed@yahoo.com','555-555-6789','Male','ar'),('Pranit','pranit@gmail.com','2395823958','Male','Gu'),('Sara Kim','sara.kim@hotmail.com','555-555-7890','Female','ko');
 /*!40000 ALTER TABLE `hosts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,7 +168,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES ('ORD001','john.smith@gmail.com',1003,'2023-06-01','2023-06-07',150.00,30.00,'',NULL),('ORD002','john.smith@gmail.com',1007,'2023-08-15','2023-08-20',100.00,20.00,'processing',NULL),('ORD003','jdoe@gmail.com',1009,'2023-05-12','2023-05-18',120.00,25.00,'completed',4),('ORD004','linda.lee@gmail.com',1008,'2023-07-21','2023-07-24',80.00,15.00,'processing',NULL),('ORD005','michael.kim@outlook.com',1001,'2023-04-08','2023-04-10',90.00,20.00,'',NULL),('ORD006','michael.kim@outlook.com',1005,'2023-10-02','2023-10-08',110.00,30.00,'processing',NULL),('ORD007','michael.kim@outlook.com',1006,'2023-11-20','2023-11-25',100.00,25.00,'processing',NULL),('ORD008','linda.lee@gmail.com',1010,'2023-09-12','2023-09-15',70.00,20.00,'',NULL),('ORD009','emily.chen@gmail.com',1002,'2023-12-18','2023-12-24',130.00,35.00,'',NULL),('ORD010','dkim@outlook.com',1003,'2023-08-01','2023-08-06',95.00,20.00,'completed',NULL);
+INSERT INTO `orders` VALUES ('ORD001','john.smith@gmail.com',1003,'2023-06-01','2023-06-07',150.00,30.00,'',NULL),('ORD0011','jdoe@gmail.com',1011,'2023-04-21','2023-04-28',300.00,30.00,'completed',NULL),('ORD002','john.smith@gmail.com',1007,'2023-08-15','2023-08-20',100.00,20.00,'processing',NULL),('ORD003','jdoe@gmail.com',1009,'2023-05-12','2023-05-18',120.00,25.00,'completed',5),('ORD004','linda.lee@gmail.com',1008,'2023-07-21','2023-07-24',80.00,15.00,'processing',NULL),('ORD005','michael.kim@outlook.com',1001,'2023-04-08','2023-04-10',90.00,20.00,'',NULL),('ORD006','michael.kim@outlook.com',1005,'2023-10-02','2023-10-08',110.00,30.00,'processing',NULL),('ORD007','michael.kim@outlook.com',1006,'2023-11-20','2023-11-25',100.00,25.00,'processing',NULL),('ORD008','linda.lee@gmail.com',1010,'2023-09-12','2023-09-15',70.00,20.00,'',NULL),('ORD009','emily.chen@gmail.com',1002,'2023-12-18','2023-12-24',130.00,35.00,'',NULL),('ORD010','dkim@outlook.com',1003,'2023-08-01','2023-08-06',95.00,20.00,'completed',NULL);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -915,14 +915,15 @@ BEGIN
 			AND start_date = p_start_date LIMIT 1;
 			
 			-- If the airbnb status is not processing, delete it from the table
-			IF state <> 'processing' THEN
+			IF state = 'processing' THEN
+				SIGNAL SQLSTATE '45000';
+				SELECT 'Cannot remove Airbnb with processing status' AS result;
+			ELSE
 				DELETE FROM airbnb_unavailable 
 				WHERE house_id = p_house_id 
 				AND start_date = p_start_date;
 				SELECT 'Airbnb removed successfully' AS result;
-			ELSE
-				SIGNAL SQLSTATE '45000';
-				SELECT 'Cannot remove Airbnb with processing status' AS result;
+				
 			END IF;
 		ELSE
 			SELECT 'Airbnb not found' AS result;
@@ -1164,4 +1165,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-21 18:05:23
+-- Dump completed on 2023-04-21 20:27:17

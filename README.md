@@ -56,7 +56,7 @@ If you choose yes you will be ask to sign up as host or tenate, otherwise you wi
 Would you like to sign up as a host or tenant? 
 host
 ```
-If you choose sign up, you need to fill out the information about the account
+If you choose sign up, you need to fill out the information about the accountp
 ```
 Enter your name: 
 [wenyu]
@@ -285,12 +285,12 @@ Home Screen Menu.
 
 Please enter any of the below given options (any number) to perform an action as a tenant: 
 
-1) Search Airbnbs. 
-2) See all orders. 
-3) Rate a completed order. 
-4) Edit your Tenant profile. 
-5) Give Profile Details. 
-6) Logout. 
+Search Airbnbs. 
+See all orders. 
+Rate a completed order. 
+Edit your Tenant profile. 
+Give Profile Details. 
+Logout. 
 ```
 ### 1)Search Airbnbs and then make a order
 Firstly search the Airbnbs with the country, city and dates. It will show you all available houses you can book

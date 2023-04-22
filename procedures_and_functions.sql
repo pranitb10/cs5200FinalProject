@@ -345,7 +345,7 @@ DROP PROCEDURE IF EXISTS `create_order`;
 DELIMITER //
 
 CREATE PROCEDURE `create_order` (
-    IN `in_tenant_email` VARCHAR(50),
+    IN `in_tenant_email` VARCHAR(150),
     IN `in_house_id` INT,
     IN `in_start_date` DATE,
     IN `in_end_date` DATE

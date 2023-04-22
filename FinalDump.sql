@@ -39,7 +39,7 @@ CREATE TABLE `airbnb_unavailable` (
 
 LOCK TABLES `airbnb_unavailable` WRITE;
 /*!40000 ALTER TABLE `airbnb_unavailable` DISABLE KEYS */;
-INSERT INTO `airbnb_unavailable` VALUES (1001,'2023-06-01','2023-06-07'),(1001,'2023-08-15','2023-08-20'),(1003,'2023-05-12','2023-05-18'),(1004,'2023-09-12','2023-09-15'),(1005,'2023-04-08','2023-04-10'),(1005,'2023-10-02','2023-10-08'),(1005,'2023-11-20','2023-11-25'),(1006,'2023-12-18','2023-12-24'),(1010,'2023-08-01','2023-08-06'),(1011,'2023-04-21','2023-04-28');
+INSERT INTO `airbnb_unavailable` VALUES (1001,'2023-06-01','2023-06-07'),(1001,'2023-08-15','2023-08-20'),(1003,'2023-05-12','2023-05-18'),(1004,'2023-09-12','2023-09-15'),(1005,'2023-04-08','2023-04-10'),(1005,'2023-10-02','2023-10-08'),(1005,'2023-11-20','2023-11-25'),(1006,'2023-12-18','2023-12-24'),(1010,'2023-08-01','2023-08-06'),(1011,'2023-04-21','2023-04-28'),(1011,'2023-05-01','2023-05-10'),(1011,'2023-11-01','2023-11-10');
 /*!40000 ALTER TABLE `airbnb_unavailable` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ CREATE TABLE `hosts` (
 
 LOCK TABLES `hosts` WRITE;
 /*!40000 ALTER TABLE `hosts` DISABLE KEYS */;
-INSERT INTO `hosts` VALUES ('Ahmed Hassan','ahmed.hassan@gmail.com','555-555-4567','Male','ar'),('Anna Garcia','anna.garcia@gmail.com','555-555-2345','Others','EN'),('David Lee','david.lee@hotmail.com',NULL,'Male','ko'),('Host1','host1@gmail.com','9999999999','Male','AF'),('Jasmine Wong','jasmine.wong@yahoo.com','555-555-8901','Female','zh'),('Javier Hernandez','javier.hernandez@yahoo.com','555-555-3456','Male','es'),('John Smith','john.smith@gmail.com','555-555-1234','Male','en'),('Lena Nguyen','lena.nguyen@gmail.com',NULL,'Female','vi'),('Mary Johnson','mary.johnson@yahoo.com','555-555-5678','Female','en'),('Mohammed Ahmed','mohammed.ahmed@yahoo.com','555-555-6789','Male','ar'),('Pranit','pranit@gmail.com','2395823958','Male','Gu'),('Sara Kim','sara.kim@hotmail.com','555-555-7890','Female','ko');
+INSERT INTO `hosts` VALUES ('Ahmed Hassan','ahmed.hassan@gmail.com','555-555-4567','Male','ar'),('Anna Garcia','anna.garcia@gmail.com','555-555-2345','Male','AR'),('David Lee','david.lee@hotmail.com',NULL,'Male','ko'),('Host1','host1@gmail.com','9999999999','Male','AF'),('Jasmine Wong','jasmine.wong@yahoo.com','555-555-8901','Female','zh'),('Javier Hernandez','javier.hernandez@yahoo.com','555-555-3456','Male','es'),('John Smith','john.smith@gmail.com','555-555-1234','Male','en'),('Lena Nguyen','lena.nguyen@gmail.com',NULL,'Female','vi'),('Mary Johnson','mary.johnson@yahoo.com','555-555-5678','Female','en'),('Mohammed Ahmed','mohammed.ahmed@yahoo.com','555-555-6789','Male','ar'),('Pranit','pranit@gmail.com','2395823958','Male','Gu'),('Sara Kim','sara.kim@hotmail.com','555-555-7890','Female','ko');
 /*!40000 ALTER TABLE `hosts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,7 +168,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES ('ORD001','john.smith@gmail.com',1003,'2023-06-01','2023-06-07',150.00,30.00,'',NULL),('ORD0011','jdoe@gmail.com',1011,'2023-04-21','2023-04-28',300.00,30.00,'completed',NULL),('ORD002','john.smith@gmail.com',1007,'2023-08-15','2023-08-20',100.00,20.00,'processing',NULL),('ORD003','jdoe@gmail.com',1009,'2023-05-12','2023-05-18',120.00,25.00,'completed',5),('ORD004','linda.lee@gmail.com',1008,'2023-07-21','2023-07-24',80.00,15.00,'processing',NULL),('ORD005','michael.kim@outlook.com',1001,'2023-04-08','2023-04-10',90.00,20.00,'',NULL),('ORD006','michael.kim@outlook.com',1005,'2023-10-02','2023-10-08',110.00,30.00,'processing',NULL),('ORD007','michael.kim@outlook.com',1006,'2023-11-20','2023-11-25',100.00,25.00,'processing',NULL),('ORD008','linda.lee@gmail.com',1010,'2023-09-12','2023-09-15',70.00,20.00,'',NULL),('ORD009','emily.chen@gmail.com',1002,'2023-12-18','2023-12-24',130.00,35.00,'',NULL),('ORD010','dkim@outlook.com',1003,'2023-08-01','2023-08-06',95.00,20.00,'completed',NULL);
+INSERT INTO `orders` VALUES ('ORD001','john.smith@gmail.com',1003,'2023-06-01','2023-06-07',150.00,30.00,'',NULL),('ORD0011','jdoe@gmail.com',1011,'2023-04-21','2023-04-28',300.00,30.00,'completed',NULL),('ORD0012','wenyu@gmail.com',1011,'2023-05-01','2023-05-10',300.00,30.00,'processing',NULL),('ORD0013','wenyu@gmail.com',1010,'2023-04-21','2023-04-25',80.00,15.00,'wait to confirmed',NULL),('ORD0014','pranit@gmail.com',1011,'2023-11-01','2023-11-10',300.00,30.00,'processing',NULL),('ORD002','john.smith@gmail.com',1007,'2023-08-15','2023-08-20',100.00,20.00,'processing',NULL),('ORD003','jdoe@gmail.com',1009,'2023-05-12','2023-05-18',120.00,25.00,'completed',5),('ORD004','linda.lee@gmail.com',1008,'2023-07-21','2023-07-24',80.00,15.00,'processing',NULL),('ORD005','michael.kim@outlook.com',1001,'2023-04-08','2023-04-10',90.00,20.00,'',NULL),('ORD006','michael.kim@outlook.com',1005,'2023-10-02','2023-10-08',110.00,30.00,'processing',NULL),('ORD007','michael.kim@outlook.com',1006,'2023-11-20','2023-11-25',100.00,25.00,'processing',NULL),('ORD008','linda.lee@gmail.com',1010,'2023-09-12','2023-09-15',70.00,20.00,'',NULL),('ORD009','emily.chen@gmail.com',1002,'2023-12-18','2023-12-24',130.00,35.00,'',NULL),('ORD010','dkim@outlook.com',1003,'2023-08-01','2023-08-06',95.00,20.00,'completed',NULL);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,7 +198,7 @@ CREATE TABLE `tenants` (
 
 LOCK TABLES `tenants` WRITE;
 /*!40000 ALTER TABLE `tenants` DISABLE KEYS */;
-INSERT INTO `tenants` VALUES ('David Kim','dkim@outlook.com','555-7654','Male','JA'),('Emily Chen','emily.chen@gmail.com','555-7890','Female','EN'),('Emily Chen','emily.chen@outlook.com','555-8765','Female','FR'),('John Doe','jdoe@gmail.com','555-2345','Not to tell','ZH'),('John Lee','jlee@NEU.edu','555-4321','Others','ZH'),('John Smith','john.smith@gmail.com','555-1234','Not to tell','EN'),('Linda Lee','linda.lee@gmail.com','555-6789','Female','EL'),('Mary Johnson','mary.johnson@outlook.com','555-5678','Not to tell','FR'),('Michael Kim','michael.kim@outlook.com','555-3456','Male','JA'),('Mary Johnson','mjohnson@NEU.edu','555-2198','Others','EL');
+INSERT INTO `tenants` VALUES ('David Kim','dkim@outlook.com','555-7654','Male','JA'),('Emily Chen','emily.chen@gmail.com','555-7890','Female','EN'),('Emily Chen','emily.chen@outlook.com','555-8765','Female','FR'),('John Doe','jdoe@gmail.com','555-2345','Not to tell','ZH'),('John Lee','jlee@NEU.edu','555-4321','Others','ZH'),('John Smith','john.smith@gmail.com','555-1234','Not to tell','EN'),('John','john99@gmail.com','8571280128','Male','EN'),('Linda Lee','linda.lee@gmail.com','555-6789','Female','EL'),('Mary Johnson','mary.johnson@outlook.com','555-5678','Not to tell','FR'),('Michael Kim','michael.kim@outlook.com','555-3456','Male','JA'),('Mary Johnson','mjohnson@NEU.edu','555-2198','Others','EL'),('Pranit','pranit@gmail.com','7890123456','Male','EN'),('Wenyu','wenyu@gmail.com','1234567890','Female','EN');
 /*!40000 ALTER TABLE `tenants` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1165,4 +1165,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-21 20:27:17
+-- Dump completed on 2023-04-21 23:23:20

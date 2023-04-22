@@ -171,7 +171,7 @@ def tenant_menu(tenant_email):
             result_args = cursor.execute(query, (email))
             result_list_completed_orders = cursor.fetchall()
             attr, info = readData(result_list_completed_orders)
-
+            showPandasDataFrame(attr, info)
             
             order_no = input("\n\nPlease enter the order number you want to rate based on your living experience at the Airbnb. \n")
             rating = input("Please enter your rating on a scale of 0-5 for the selected Airbnb. \n")
